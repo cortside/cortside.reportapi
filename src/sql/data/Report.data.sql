@@ -18,7 +18,8 @@ select * from reportargumentquery
 
 select * from reportargumentquery
 
-update reportargumentquery set argquery='select distinct State ID, State Name from eboa.dbo.Contractor order by State'
+update reportargumentquery set argquery='select distinct st ID, st Name from c1_qa_eboa.dbo.address where st is not null and st !=''  '' order by st'
 
 
 update reportargument set argname='@state' where reportargumentid=3
+
