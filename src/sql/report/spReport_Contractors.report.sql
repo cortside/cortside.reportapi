@@ -18,8 +18,8 @@ BEGIN
 	SET NOCOUNT ON;
 
 	select *
-	from c1_qa_eboa.dbo.contractor c
-	left join c1_qa_eboa.dbo.Address a on c.MailingAddressId=a.AddressID
+	from eboa.dbo.contractor c
+	left join eboa.dbo.Address a on c.MailingAddressId=a.AddressID
 	where CreatedDate between coalesce(@startDate, '1/1/1970') and coalesce(@endDate, '12/31/2199')
 		and (a.St=@state or @state is null)
 	order by ContractorID
