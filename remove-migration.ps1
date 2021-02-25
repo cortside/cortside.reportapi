@@ -1,7 +1,7 @@
-$repo = "Cortside.LoanServicing"
-$project = "src/$repo.Repository"
+$repo = "Cortside.SqlReportApi"
+$project = "src/$repo.Domain"
 $startup = "src/$repo.WebApi"
-$context = "LoanContext"
+$context = "DatabaseContext"
 
 echo "removing last migration for $context context in project $project"
 

@@ -4,12 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cortside.SqlReportApi.WebApi.Controllers {
 
-    [Route("api/arguments")]
+    /// <summary>
+    /// Access functionality for report arguments
+    /// </summary>
+    [Route(BaseRoute + "arguments")]
     public class ReportArgumentController : BaseController {
 
-        public ReportArgumentController(IDatabaseContext db, SqlReportApiService svc) : base(db, svc) {
+        /// <summary>
+        /// Initialize the controller
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="svc"></param>
+        public ReportArgumentController(IDatabaseContext db, SqlReportService svc) : base(db, svc) {
         }
 
+        /// <summary>
+        /// Get all report arguments
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get() {
             var result = svc.GetReportArguments();
@@ -19,6 +31,11 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             return new ObjectResult(result);
         }
 
+        /// <summary>
+        /// Get report argument by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id) {
             var result = svc.GetReportArgument(id);

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cortside.SqlReportApi.Domain {
-
     [Table("ReportArgument")]
     public class ReportArgument {
         public int ReportArgumentId { get; set; }
@@ -11,7 +11,7 @@ namespace Cortside.SqlReportApi.Domain {
         public string ArgName { get; set; }
 
         [NotMapped]
-        public Dictionary<object, object> ArgValues { get; set; }
+        public Dictionary<string, object> ArgValues { get; set; }
 
         public string ArgType { get; set; }
         public int? ReportArgumentQueryId { get; set; }

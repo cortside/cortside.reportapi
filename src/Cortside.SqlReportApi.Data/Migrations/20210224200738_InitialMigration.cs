@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cortside.SqlReportApi.Data.Migrations
@@ -17,7 +16,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 columns: table => new
                 {
                     PermissionId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
@@ -32,7 +31,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 columns: table => new
                 {
                     ReportArgumentQueryId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ArgQuery = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -46,7 +45,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 columns: table => new
                 {
                     ReportGroupId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -77,7 +76,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 columns: table => new
                 {
                     ReportId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     ReportGroupId = table.Column<int>(nullable: false),
@@ -138,7 +137,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 columns: table => new
                 {
                     ReportArgumentId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ReportId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     ArgName = table.Column<string>(nullable: true),

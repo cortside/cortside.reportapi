@@ -16,7 +16,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("dbo")
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -24,11 +24,14 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 {
                     b.Property<int>("PermissionId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PermissionId");
 
@@ -39,15 +42,20 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 {
                     b.Property<int>("ReportId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PermissionId");
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ReportGroupId");
+                    b.Property<int>("ReportGroupId")
+                        .HasColumnType("int");
 
                     b.HasKey("ReportId");
 
@@ -62,19 +70,26 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 {
                     b.Property<int>("ReportArgumentId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ArgName");
+                    b.Property<string>("ArgName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ArgType");
+                    b.Property<string>("ArgType")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReportArgumentQueryId");
+                    b.Property<int?>("ReportArgumentQueryId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ReportId");
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Sequence");
+                    b.Property<int>("Sequence")
+                        .HasColumnType("int");
 
                     b.HasKey("ReportArgumentId");
 
@@ -89,9 +104,11 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 {
                     b.Property<int>("ReportArgumentQueryId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ArgQuery");
+                    b.Property<string>("ArgQuery")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ReportArgumentQueryId");
 
@@ -102,9 +119,11 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 {
                     b.Property<int>("ReportGroupId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ReportGroupId");
 
@@ -114,15 +133,22 @@ namespace Cortside.SqlReportApi.Data.Migrations
             modelBuilder.Entity("Cortside.SqlReportApi.Domain.SqlReportApi", b =>
                 {
                     b.Property<Guid>("SqlReportApiId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CreateSubjectId");
+                    b.Property<Guid?>("CreateSubjectId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("LastModifiedDate");
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid>("LastModifiedSubjectId");
+                    b.Property<Guid?>("LastModifiedSubjectId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("SqlReportApiId");
 
@@ -135,20 +161,26 @@ namespace Cortside.SqlReportApi.Data.Migrations
 
             modelBuilder.Entity("Cortside.SqlReportApi.Domain.Subject", b =>
                 {
-                    b.Property<Guid>("SubjectId");
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FamilyName")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
                     b.Property<string>("GivenName")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
                     b.Property<string>("UserPrincipalName")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
                     b.HasKey("SubjectId");
@@ -161,12 +193,14 @@ namespace Cortside.SqlReportApi.Data.Migrations
                     b.HasOne("Cortside.SqlReportApi.Domain.Permission", "Permission")
                         .WithMany()
                         .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Cortside.SqlReportApi.Domain.ReportGroup", "ReportGroup")
                         .WithMany()
                         .HasForeignKey("ReportGroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportArgument", b =>
@@ -175,10 +209,11 @@ namespace Cortside.SqlReportApi.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ReportArgumentQueryId");
 
-                    b.HasOne("Cortside.SqlReportApi.Domain.Report")
+                    b.HasOne("Cortside.SqlReportApi.Domain.Report", null)
                         .WithMany("ReportArguments")
                         .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Cortside.SqlReportApi.Domain.SqlReportApi", b =>
@@ -186,12 +221,14 @@ namespace Cortside.SqlReportApi.Data.Migrations
                     b.HasOne("Cortside.SqlReportApi.Domain.Subject", "CreatedSubject")
                         .WithMany()
                         .HasForeignKey("CreateSubjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Cortside.SqlReportApi.Domain.Subject", "LastModifiedSubject")
                         .WithMany()
                         .HasForeignKey("LastModifiedSubjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

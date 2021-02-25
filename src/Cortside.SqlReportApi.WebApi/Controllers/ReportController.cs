@@ -5,12 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cortside.SqlReportApi.WebApi.Controllers {
 
-    [Route("api/reports")]
+    /// <summary>
+    /// Access functionality for reports
+    /// </summary>
+    [Route(BaseRoute + "reports")]
     public class ReportController : BaseController {
 
-        public ReportController(IDatabaseContext db, SqlReportApiService svc) : base(db, svc) {
+        /// <summary>
+        /// Initialize the base controller
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="svc"></param>
+        public ReportController(IDatabaseContext db, ISqlReportService svc) : base(db, svc) {
         }
 
+        /// <summary>
+        /// Get all reports
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get() {
             var result = svc.GetReports();
@@ -20,6 +32,11 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             return new ObjectResult(result);
         }
 
+        /// <summary>
+        /// Get a report by ID
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{name}")]
         public async Task<IActionResult> Get(string name) {
