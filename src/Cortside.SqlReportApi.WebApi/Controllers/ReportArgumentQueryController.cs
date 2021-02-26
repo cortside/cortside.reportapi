@@ -15,7 +15,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <param name="db"></param>
         /// <param name="svc"></param>
-        public ReportArgumentQueryController(IDatabaseContext db, SqlReportService svc) : base(db, svc) {
+        public ReportArgumentQueryController(IDatabaseContext db, ISqlReportService svc) : base(db, svc) {
         }
 
         /// <summary>

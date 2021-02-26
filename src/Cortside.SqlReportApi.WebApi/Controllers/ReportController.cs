@@ -33,7 +33,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         }
 
         /// <summary>
-        /// Get a report by ID
+        /// Get a report by name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
