@@ -1,5 +1,5 @@
 $repo = "Cortside.SqlReportApi"
-$project = "src/$repo.Domain"
+$project = "src/$repo.Data"
 $startup = "src/$repo.WebApi"
 $context = "DatabaseContext"
 

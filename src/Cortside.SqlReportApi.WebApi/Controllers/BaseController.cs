@@ -1,6 +1,7 @@
 ﻿using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.DomainService;
 using Microsoft.AspNetCore.Mvc;
+using PolicyServer.Runtime.Client;
 
 namespace Cortside.SqlReportApi.WebApi.Controllers {
 
@@ -25,13 +26,19 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         protected ISqlReportService svc;
 
         /// <summary>
+        /// Policy client to check permissions
+        /// </summary>
+        protected readonly IPolicyServerRuntimeClient policyClient;
+
+        /// <summary>
         /// Initialize the base controller
         /// </summary>
         /// <param name="db"></param>
         /// <param name="svc"></param>
-        public BaseController(IDatabaseContext db, ISqlReportService svc) {
+        public BaseController(IDatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) {
             this.db = db;
             this.svc = svc;
+            this.policyClient = policyClient;
         }
     }
 }

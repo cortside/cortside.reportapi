@@ -1,6 +1,7 @@
 ﻿using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.DomainService;
 using Microsoft.AspNetCore.Mvc;
+using PolicyServer.Runtime.Client;
 
 namespace Cortside.SqlReportApi.WebApi.Controllers {
 
@@ -15,7 +16,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <param name="db"></param>
         /// <param name="svc"></param>
-        public ReportArgumentController(IDatabaseContext db, ISqlReportService svc) : base(db, svc) {
+        public ReportArgumentController(IDatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) : base(db, svc, policyClient) {
         }
 
         /// <summary>

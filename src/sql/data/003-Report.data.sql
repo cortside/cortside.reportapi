@@ -1,12 +1,14 @@
 declare @reportGroupId int
 declare @reportId int
 declare @stateQueryId int
+declare @name nvarchar(50)
 
+set @name = 'spReport_Contractors'
 update ReportArgumentQuery set ArgQuery='select distinct a.St ID, a.St State from eboa.dbo.Contractor c join eboa.dbo.Address a on c.MailingAddressId=a.AddressID' where ReportArgumentQueryId=2
 exec @stateQueryId = spAddReportArgumentQuery 'select distinct a.St ID, a.St State from eboa.dbo.Contractor c join eboa.dbo.Address a on c.MailingAddressId=a.AddressID'
 
 set @reportGroupId = 1
-exec @reportId = spAddReport 'spReport_Contractors', 'List Contractors', @reportGroupId
+exec @reportId = spAddReport @name, 'List Contractors', @reportGroupId
 	exec spAddReportArgument @reportId, 'Start Date', '@startdate', 'DateTime', null, 1
 	exec spAddReportArgument @reportId, 'End Date', '@enddate', 'DateTime', null, 2
 	exec spAddReportArgument @reportId, 'State', '@state', 'varchar(2)', @stateQueryId, 3
