@@ -29,6 +29,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Constants.Authorization.Permissions.CanGetReports)]
         public async Task<IActionResult> Get() {
             var result = svc.GetReports();
             if (result == null) {
