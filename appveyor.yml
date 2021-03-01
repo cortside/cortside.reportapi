@@ -28,7 +28,7 @@ dotnet_csproj:
   file_version: '{version}'  
 
 before_build:
-  - appveyor-retry dotnet restore src/Cortside.WebApiStarter.sln -v Minimal
+  - appveyor-retry dotnet restore src/Cortside.SqlReportApi.sln -v Minimal
   - set DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%
 
 build:
