@@ -15,16 +15,8 @@ as
 	print N'Adding report permission: ' + @name
 	if not exists (select * from Report where Name = @name and ReportGroupId = @reportGroupId)
 		begin
-			declare @permissionId int
-			select @permissionId = PermissionId from Permission where Name = @name and Description = @description
-			if(@permissionId is null)
-			begin
-				insert into Permission (Name, Description) values (@name, @description)
-				select @permissionId = SCOPE_IDENTITY()
-			end
-
-			insert into Report (Name, [Description], ReportGroupId, PermissionId)
-			values (@name, @description, @reportGroupId, @permissionId)
+			insert into Report (Name, [Description], ReportGroupId, Permission)
+			values (@name, @description, @reportGroupId, @name)
 		
 			return (select SCOPE_IDENTITY())
 		end

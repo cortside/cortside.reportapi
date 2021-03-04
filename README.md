@@ -1,8 +1,7 @@
-# SqlReport api
+# cortside.webapistarter
 
-Endpoints:
+# Pre-Requisites
+* .NET 3.1 SDK
+* Visual Studio 2019
+  
 
-* Get Reports
-  * http://localhost:5000/api/reports
-* Execute report with argument
-  * http://localhost:5000/api/reports/spReport_Contractors?state=OH
