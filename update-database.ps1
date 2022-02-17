@@ -1,7 +1,7 @@
 Param
 (
 	[Parameter(Mandatory = $false)][string]$server = "localhost",
-        [Parameter(Mandatory=$false)][string]$database = "WebApiStarter",
+        [Parameter(Mandatory=$false)][string]$database = "SqlReport",
 	[Parameter(Mandatory = $false)][string]$username = "",
 	[Parameter(Mandatory = $false)][string]$password = "",
 	[Parameter(Mandatory = $false)][string]$ConnectionString = "",
@@ -61,21 +61,24 @@ $scripts = @()
 gci -Recurse @(".\src\sql\table\*.sql") | % {
 	$scripts += $_.FullName
 }
-gci -Recurse @(".\src\sql\data\*.sql") | % {
-	$scripts += $_.FullName
-}
-# gci -Recurse @(".\src\sql\proc\*.sql") | % {
-	# $scripts += $_.FullName
-# }
-gci -Recurse @(".\src\sql\trigger\*.sql") | % {
-	$scripts += $_.FullName
-}
+ gci -Recurse @(".\src\sql\proc\*.sql") | % {
+	 $scripts += $_.FullName
+ }
+#gci -Recurse @(".\src\sql\trigger\*.sql") | % {
+#	$scripts += $_.FullName
+#}
 # gci -Recurse @(".\src\sql\view\*.sql") | % {
 	# $scripts += $_.FullName
 # }
 #gci -Recurse @(".\src\sql\release\*.sql") | % {
 #	$scripts += $_.FullName
 #}
+gci -Recurse @(".\src\sql\data\*.sql") | % {
+	$scripts += $_.FullName
+}
+gci -Recurse @(".\src\sql\report\*.sql") | % {
+	$scripts += $_.FullName
+}
 
 
 echo "Server: $Server"
