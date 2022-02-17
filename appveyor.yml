@@ -48,9 +48,6 @@ after_build:
 - cmd: 7z a sqlreport-api.zip -r %APPVEYOR_BUILD_FOLDER%\publish\*
 - cmd: appveyor PushArtifact sqlreport-api.zip
 
-artifacts:
-  - path: artifacts\**\*.*
-
 cache:
   - '%USERPROFILE%\.nuget\packages'
   
