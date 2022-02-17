@@ -7,14 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Cortside.SqlReportApi.Data.Migrations
-{
+namespace Cortside.SqlReportApi.Data.Migrations {
     [DbContext(typeof(DatabaseContext))]
     [Migration("20210226164733_Initial")]
-    partial class Initial
-    {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
+    partial class Initial {
+        protected override void BuildTargetModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("dbo")
@@ -22,162 +19,154 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Report", b =>
-                {
-                    b.Property<int>("ReportId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Report", b => {
+                b.Property<int>("ReportId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                b.Property<string>("Description")
+                    .HasMaxLength(250)
+                    .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Name")
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Permission")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Permission")
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("ReportGroupId")
-                        .HasColumnType("int");
+                b.Property<int>("ReportGroupId")
+                    .HasColumnType("int");
 
-                    b.HasKey("ReportId");
+                b.HasKey("ReportId");
 
-                    b.HasIndex("ReportGroupId");
+                b.HasIndex("ReportGroupId");
 
-                    b.ToTable("Report");
-                });
+                b.ToTable("Report");
+            });
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportArgument", b =>
-                {
-                    b.Property<int>("ReportArgumentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportArgument", b => {
+                b.Property<int>("ReportArgumentId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ArgName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("ArgName")
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ArgType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("ArgType")
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Name")
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("ReportArgumentQueryId")
-                        .HasColumnType("int");
+                b.Property<int?>("ReportArgumentQueryId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("ReportId")
-                        .HasColumnType("int");
+                b.Property<int>("ReportId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
+                b.Property<int>("Sequence")
+                    .HasColumnType("int");
 
-                    b.HasKey("ReportArgumentId");
+                b.HasKey("ReportArgumentId");
 
-                    b.HasIndex("ReportArgumentQueryId");
+                b.HasIndex("ReportArgumentQueryId");
 
-                    b.HasIndex("ReportId");
+                b.HasIndex("ReportId");
 
-                    b.ToTable("ReportArgument");
-                });
+                b.ToTable("ReportArgument");
+            });
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportArgumentQuery", b =>
-                {
-                    b.Property<int>("ReportArgumentQueryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportArgumentQuery", b => {
+                b.Property<int>("ReportArgumentQueryId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ArgQuery")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ArgQuery")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ReportArgumentQueryId");
+                b.HasKey("ReportArgumentQueryId");
 
-                    b.ToTable("ReportArgumentQuery");
-                });
+                b.ToTable("ReportArgumentQuery");
+            });
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportGroup", b =>
-                {
-                    b.Property<int>("ReportGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportGroup", b => {
+                b.Property<int>("ReportGroupId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Name")
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("ReportGroupId");
+                b.HasKey("ReportGroupId");
 
-                    b.ToTable("ReportGroup");
-                });
+                b.ToTable("ReportGroup");
+            });
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Subject", b =>
-                {
-                    b.Property<Guid>("SubjectId")
-                        .HasColumnType("uniqueidentifier");
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Subject", b => {
+                b.Property<Guid>("SubjectId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("CreatedDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("FamilyName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("FamilyName")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("GivenName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("GivenName")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("Name")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("UserPrincipalName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("UserPrincipalName")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("SubjectId");
+                b.HasKey("SubjectId");
 
-                    b.ToTable("Subject");
-                });
+                b.ToTable("Subject");
+            });
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Report", b =>
-                {
-                    b.HasOne("Cortside.SqlReportApi.Domain.ReportGroup", "ReportGroup")
-                        .WithMany()
-                        .HasForeignKey("ReportGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Report", b => {
+                b.HasOne("Cortside.SqlReportApi.Domain.ReportGroup", "ReportGroup")
+                    .WithMany()
+                    .HasForeignKey("ReportGroupId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("ReportGroup");
-                });
+                b.Navigation("ReportGroup");
+            });
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportArgument", b =>
-                {
-                    b.HasOne("Cortside.SqlReportApi.Domain.ReportArgumentQuery", "ReportArgumentQuery")
-                        .WithMany()
-                        .HasForeignKey("ReportArgumentQueryId");
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.ReportArgument", b => {
+                b.HasOne("Cortside.SqlReportApi.Domain.ReportArgumentQuery", "ReportArgumentQuery")
+                    .WithMany()
+                    .HasForeignKey("ReportArgumentQueryId");
 
-                    b.HasOne("Cortside.SqlReportApi.Domain.Report", null)
-                        .WithMany("ReportArguments")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("Cortside.SqlReportApi.Domain.Report", null)
+                    .WithMany("ReportArguments")
+                    .HasForeignKey("ReportId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("ReportArgumentQuery");
-                });
+                b.Navigation("ReportArgumentQuery");
+            });
 
-            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Report", b =>
-                {
-                    b.Navigation("ReportArguments");
-                });
+            modelBuilder.Entity("Cortside.SqlReportApi.Domain.Report", b => {
+                b.Navigation("ReportArguments");
+            });
 #pragma warning restore 612, 618
         }
     }
