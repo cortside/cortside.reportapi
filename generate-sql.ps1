@@ -1,4 +1,4 @@
-$repo = "Cortside.SqlReportApi"
+$repo = "Acme.WebApiStarter"
 $project = "src/$repo.Data"
 $startup = "src/$repo.WebApi"
 $context = "DatabaseContext"
@@ -29,16 +29,19 @@ GO
 "@
 
 ## get list of migrations
-$migrations = (dotnet ef migrations list --project "$project" --startup-project "$startup" --context "$context")
+$migrations = (dotnet ef migrations list --no-build --project "$project" --startup-project "$startup" --context "$context")
 
 $previousMigration="0"
 foreach($migration in $migrations) {
+	if ($migration.StartsWith("20")) {
+		$migration = $migration -replace ' \(Pending\)', ''
+
 	echo "Generating migration $migration..."
 	
 	$exists = test-path src/sql/table/$migration.migration.sql
 	if (!$exists) {
 	## generate single migration
-	dotnet ef migrations script $previousMigration $migration --idempotent --project "$project" --startup-project "$startup" --context "$context" --output src/sql/table/$migration.migration.sql
+	dotnet ef migrations script $previousMigration $migration --no-build --idempotent --project "$project" --startup-project "$startup" --context "$context" --output src/sql/table/$migration.migration.sql
 
 	$exists = test-path src/sql/table/$migration.migration.sql
 	if ($exists) {
@@ -55,6 +58,7 @@ foreach($migration in $migrations) {
 	
 	## set last for next loop
 	$previousMigration=$migration 
+	}	
 }
 
 echo "done"
