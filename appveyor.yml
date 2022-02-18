@@ -45,9 +45,8 @@ after_build:
     dotnet publish -r win-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/win-x64 .\src\Cortside.SqlReportApi.WebApi;
     dotnet publish -r linux-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/linux-x64 .\src\Cortside.SqlReportApi.WebApi;
     dotnet publish -r linux-musl-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/linux-musl-x64 .\src\Cortside.SqlReportApi.WebApi;
-    docker build -t cortside/sqlreport-api:1.0 .;
-    #- docker push cortside/healthmonitor:1.0;    
-    
+    #docker build -t cortside/sqlreport-api:1.0 .;
+    #- docker push cortside/healthmonitor:1.0;       
 - cmd: 7z a sqlreport-api.zip -r %APPVEYOR_BUILD_FOLDER%\publish\*
 - cmd: appveyor PushArtifact sqlreport-api.zip
 
