@@ -45,6 +45,9 @@ after_build:
     dotnet publish -r win-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/win-x64 .\src\Cortside.SqlReportApi.WebApi;
     dotnet publish -r linux-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/linux-x64 .\src\Cortside.SqlReportApi.WebApi;
     dotnet publish -r linux-musl-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/linux-musl-x64 .\src\Cortside.SqlReportApi.WebApi;
+    docker build -t cortside/sqlreport-api:1.0 .;
+    #- docker push cortside/healthmonitor:1.0;    
+    
 - cmd: 7z a sqlreport-api.zip -r %APPVEYOR_BUILD_FOLDER%\publish\*
 - cmd: appveyor PushArtifact sqlreport-api.zip
 
@@ -58,25 +61,25 @@ test:
   assemblies:
 #    - '**\Cortside.SqlReportApi.Test.dll'
 
-artifacts:
-- path: sqlreport-api.zip
-  name: deploy
-deploy:
-- provider: GitHub
-  description: '$(appveyor_build_version)'
-  auth_token:
-    secure: zCTy7HewzmO4PXDIy8WegsOGMYq05BxUr+Y6RBBG5RIbcMX7exf/C7+cBgv5yhDY
-  artifact: deploy
-  draft: false
-  prerelease: false
-  on:
-    branch: master                 # release from master branch only
-- provider: GitHub
-  description: '$(appveyor_build_version)-develop'
-  auth_token:
-    secure: zCTy7HewzmO4PXDIy8WegsOGMYq05BxUr+Y6RBBG5RIbcMX7exf/C7+cBgv5yhDY
-  artifact: deploy
-  draft: false
-  prerelease: true
-  on:
-    branch: develop                 
+#artifacts:
+#- path: sqlreport-api.zip
+#  name: deploy
+#deploy:
+#- provider: GitHub
+#  description: '$(appveyor_build_version)'
+#  auth_token:
+#    secure: zCTy7HewzmO4PXDIy8WegsOGMYq05BxUr+Y6RBBG5RIbcMX7exf/C7+cBgv5yhDY
+#  artifact: deploy
+#  draft: false
+#  prerelease: false
+#  on:
+#    branch: master                 # release from master branch only
+#- provider: GitHub
+#  description: '$(appveyor_build_version)-develop'
+#  auth_token:
+#    secure: zCTy7HewzmO4PXDIy8WegsOGMYq05BxUr+Y6RBBG5RIbcMX7exf/C7+cBgv5yhDY
+#  artifact: deploy
+#  draft: false
+#  prerelease: true
+#  on:
+#    branch: develop                 
