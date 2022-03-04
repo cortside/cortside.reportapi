@@ -19,7 +19,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <summary>
         /// Database
         /// </summary>
-        protected IDatabaseContext db;
+        protected DatabaseContext db;
         /// <summary>
         /// Report Service
         /// </summary>
@@ -35,7 +35,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <param name="db"></param>
         /// <param name="svc"></param>
-        public BaseController(IDatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) {
+        public BaseController(DatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) {
             this.db = db;
             this.svc = svc;
             this.policyClient = policyClient;

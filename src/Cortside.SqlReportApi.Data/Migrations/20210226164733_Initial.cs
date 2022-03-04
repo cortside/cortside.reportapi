@@ -1,48 +1,40 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Cortside.SqlReportApi.Data.Migrations
-{
-    public partial class Initial : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace Cortside.SqlReportApi.Data.Migrations {
+    public partial class Initial : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.EnsureSchema(
                 name: "dbo");
 
             migrationBuilder.CreateTable(
                 name: "ReportArgumentQuery",
                 schema: "dbo",
-                columns: table => new
-                {
+                columns: table => new {
                     ReportArgumentQueryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ArgQuery = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_ReportArgumentQuery", x => x.ReportArgumentQueryId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ReportGroup",
                 schema: "dbo",
-                columns: table => new
-                {
+                columns: table => new {
                     ReportGroupId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_ReportGroup", x => x.ReportGroupId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Subject",
                 schema: "dbo",
-                columns: table => new
-                {
+                columns: table => new {
                     SubjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     GivenName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -50,16 +42,14 @@ namespace Cortside.SqlReportApi.Data.Migrations
                     UserPrincipalName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Subject", x => x.SubjectId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Report",
                 schema: "dbo",
-                columns: table => new
-                {
+                columns: table => new {
                     ReportId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -67,8 +57,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                     ReportGroupId = table.Column<int>(type: "int", nullable: false),
                     Permission = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Report", x => x.ReportId);
                     table.ForeignKey(
                         name: "FK_Report_ReportGroup_ReportGroupId",
@@ -82,8 +71,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
             migrationBuilder.CreateTable(
                 name: "ReportArgument",
                 schema: "dbo",
-                columns: table => new
-                {
+                columns: table => new {
                     ReportArgumentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReportId = table.Column<int>(type: "int", nullable: false),
@@ -93,8 +81,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                     ReportArgumentQueryId = table.Column<int>(type: "int", nullable: true),
                     Sequence = table.Column<int>(type: "int", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_ReportArgument", x => x.ReportArgumentId);
                     table.ForeignKey(
                         name: "FK_ReportArgument_Report_ReportId",
@@ -131,8 +118,7 @@ namespace Cortside.SqlReportApi.Data.Migrations
                 column: "ReportId");
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
                 name: "ReportArgument",
                 schema: "dbo");

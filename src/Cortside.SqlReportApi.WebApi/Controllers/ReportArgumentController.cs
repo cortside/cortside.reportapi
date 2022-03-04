@@ -1,6 +1,5 @@
 ﻿using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.DomainService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolicyServer.Runtime.Client;
 
@@ -17,7 +16,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <param name="db"></param>
         /// <param name="svc"></param>
-        public ReportArgumentController(IDatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) : base(db, svc, policyClient) {
+        public ReportArgumentController(DatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) : base(db, svc, policyClient) {
         }
 
         /// <summary>
@@ -25,7 +24,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Authorize(Constants.Authorization.Permissions.CanGetReports)]
+        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
         public IActionResult Get() {
             var result = svc.GetReportArguments();
             if (result == null) {
@@ -40,7 +39,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        [Authorize(Constants.Authorization.Permissions.CanGetReports)]
+        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
         public IActionResult Get(int id) {
             var result = svc.GetReportArgument(id);
             if (result == null) {
