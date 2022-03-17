@@ -1,4 +1,4 @@
-﻿namespace Cortside.SqlReportApi.Data {
+namespace Cortside.SqlReportApi.Data {
 
     public class ReportField {
         public string Name { get; set; }

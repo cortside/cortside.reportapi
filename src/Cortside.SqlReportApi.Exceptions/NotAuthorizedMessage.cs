@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Cortside.SqlReportApi.Exceptions {
     public class NotAuthorizedMessage : Exception {
