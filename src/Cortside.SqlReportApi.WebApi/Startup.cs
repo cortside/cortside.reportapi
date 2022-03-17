@@ -140,8 +140,13 @@ namespace Cortside.SqlReportApi.WebApi {
                 c.IncludeXmlComments(xmlPath);
             });
 
+            string instrumentationKey = Configuration["ApplicationInsights:InstrumentationKey"];
             services.AddSingleton<ITelemetryInitializer, AppInsightsInitializer>();
-            services.AddApplicationInsightsTelemetry();
+            services.AddApplicationInsightsTelemetry(o => {
+                o.InstrumentationKey = instrumentationKey;
+                o.EnableAdaptiveSampling = false;
+                o.EnableActiveTelemetryConfigurationSetup = true;
+            });
 
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddPolicyServerRuntimeClient(Configuration.GetSection("PolicyServer"))

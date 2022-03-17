@@ -91,6 +91,7 @@ namespace Cortside.SqlReportApi.DomainService {
                             pairs.Add(key, value);
                         }
                     }
+
                     db.Database.GetDbConnection().Close();
                 }
 
@@ -169,6 +170,8 @@ namespace Cortside.SqlReportApi.DomainService {
                         result.Rows.Add(row);
                     }
                 }
+
+                await db.Database.GetDbConnection().CloseAsync();
             }
             return result;
         }
