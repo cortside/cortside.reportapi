@@ -1,4 +1,4 @@
-﻿using Cortside.SqlReportApi.Data;
+using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.DomainService;
 using Microsoft.AspNetCore.Mvc;
 using PolicyServer.Runtime.Client;

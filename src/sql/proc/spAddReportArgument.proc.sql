@@ -1,4 +1,4 @@
-﻿if exists (select 1 from dbo.sysobjects where id = object_id(N'[dbo].[spAddReportArgument]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+if exists (select 1 from dbo.sysobjects where id = object_id(N'[dbo].[spAddReportArgument]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure dbo.spAddReportArgument
 GO
 
