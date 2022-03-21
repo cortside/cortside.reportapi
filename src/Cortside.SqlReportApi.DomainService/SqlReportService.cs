@@ -83,16 +83,20 @@ namespace Cortside.SqlReportApi.DomainService {
                 using (var cmd = db.Database.GetDbConnection().CreateCommand()) {
                     cmd.CommandText = arg.ReportArgumentQuery.ArgQuery;
                     db.Database.GetDbConnection().Open();
-
-                    using (var reader = cmd.ExecuteReader()) {
-                        while (reader.Read()) {
-                            var key = reader.GetString(0);
-                            var value = reader.GetValue(1);
-                            pairs.Add(key, value);
+                    try {
+                        using (var reader = cmd.ExecuteReader()) {
+                            while (reader.Read()) {
+                                var key = reader.GetString(0);
+                                var value = reader.GetValue(1);
+                                pairs.Add(key, value);
+                            }
                         }
+                    } catch (Exception ex) {
+                        logger.LogError(ex, "Exception occured when requesting report from database");
+                        throw;
+                    } finally {
+                        db.Database.GetDbConnection().Close();
                     }
-
-                    db.Database.GetDbConnection().Close();
                 }
 
                 return pairs;
@@ -137,41 +141,46 @@ namespace Cortside.SqlReportApi.DomainService {
 
                 await db.Database.GetDbConnection().OpenAsync();
 
-                var argList = new List<string>();
-                foreach (var arg in report.ReportArguments) {
-                    var p = cmd.CreateParameter();
-                    p.ParameterName = arg.ArgName;
+                try {
+                    var argList = new List<string>();
+                    foreach (var arg in report.ReportArguments) {
+                        var p = cmd.CreateParameter();
+                        p.ParameterName = arg.ArgName;
 
-                    if (args.ContainsKey(arg.ArgName.Replace("@", ""))) {
-                        var argValue = args[arg.ArgName.Replace("@", "")].FirstOrDefault();
-                        p.Value = argValue;
-                    } else {
-                        p.Value = DBNull.Value;
+                        if (args.ContainsKey(arg.ArgName.Replace("@", ""))) {
+                            var argValue = args[arg.ArgName.Replace("@", "")].FirstOrDefault();
+                            p.Value = argValue;
+                        } else {
+                            p.Value = DBNull.Value;
+                        }
+                        cmd.Parameters.Add(p);
                     }
-                    cmd.Parameters.Add(p);
-                }
 
-                using (var reader = await cmd.ExecuteReaderAsync()) {
-                    result = new ReportResult(name);
-                    var schema = reader.GetSchemaTable();
+                    using (var reader = await cmd.ExecuteReaderAsync()) {
+                        result = new ReportResult(name);
+                        var schema = reader.GetSchemaTable();
 
-                    foreach (DataRow myField in schema.Rows) {
-                        var col = new ReportColumn {
-                            Name = myField[schema.Columns.IndexOf("ColumnName")].ToString(),
-                            DataType = myField[schema.Columns.IndexOf("DataType")].ToString(),
-                            Ordinal = (int)myField[schema.Columns.IndexOf("ColumnOrdinal")] - 1
+                        foreach (DataRow myField in schema.Rows) {
+                            var col = new ReportColumn {
+                                Name = myField[schema.Columns.IndexOf("ColumnName")].ToString(),
+                                DataType = myField[schema.Columns.IndexOf("DataType")].ToString(),
+                                Ordinal = (int)myField[schema.Columns.IndexOf("ColumnOrdinal")] - 1
+                            };
+                            result.Columns.Add(col);
                         };
-                        result.Columns.Add(col);
-                    };
 
-                    while (reader.Read()) {
-                        var row = new object[reader.FieldCount];
-                        reader.GetValues(row);
-                        result.Rows.Add(row);
+                        while (reader.Read()) {
+                            var row = new object[reader.FieldCount];
+                            reader.GetValues(row);
+                            result.Rows.Add(row);
+                        }
                     }
+                } catch (Exception ex) {
+                    logger.LogError(ex, "Exception occured when requesting report from database");
+                    throw;
+                } finally {
+                    await db.Database.GetDbConnection().CloseAsync();
                 }
-
-                await db.Database.GetDbConnection().CloseAsync();
             }
             return result;
         }
