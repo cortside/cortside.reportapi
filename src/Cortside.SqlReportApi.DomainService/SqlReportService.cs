@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain;
 using Cortside.SqlReportApi.Exceptions;
+using CsvHelper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -182,6 +187,20 @@ namespace Cortside.SqlReportApi.DomainService {
                     await db.Database.GetDbConnection().CloseAsync();
                 }
             }
+            return result;
+        }
+
+        public async Task<StreamContent> ExportReport(string name, IQueryCollection query, List<string> list) {
+            var report = await ExecuteReport(name, query, list);
+            var stream = new MemoryStream();
+            using (var writer = new StreamWriter(stream)) {
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture)) {
+                    csv.WriteRecord(report);
+                }
+            }
+            var result = new StreamContent(stream);
+            result.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
+            result.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = $"{name}.csv" };
             return result;
         }
     }
