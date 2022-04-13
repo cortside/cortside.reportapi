@@ -1,4 +1,7 @@
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.DomainService;
@@ -76,8 +79,9 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             var permissionsPrefix = "Sql Report";
             responseModel.Permissions = responseModel.Permissions.Select(p => $"{permissionsPrefix}.{p}").ToList();
             try {
-                var result = await svc.ExportReport(name, Request.Query, authProperties.Permissions.ToList());
-                return new ObjectResult(result);
+                Stream report = await svc.ExportReport(name, Request.Query, authProperties.Permissions.ToList());
+                var file = File(report, "application/octet-stream");
+                return file;
             } catch (ResourceNotFoundMessage) {
                 return new NotFoundResult();
             } catch (NotAuthorizedMessage) {

@@ -16,7 +16,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
     [ApiController]
     [ApiVersion("1")]
     [Produces("application/json")]
-    [Authorize]
+    //[Authorize]
     public class AuthorizationController : ControllerBase {
         private readonly ILogger<AuthorizationController> logger;
         private readonly IPolicyServerRuntimeClient policyClient;
@@ -41,6 +41,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         [HttpGet("")]
         [ProducesResponseType(typeof(AuthorizationModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPermissions() {
+            return Ok(new AuthorizationModel { Permissions = new System.Collections.Generic.List<string> { "SqlReportApi.CanGetReports" } });
             logger.LogInformation("Retrieving authorization permissions for user.");
             var authProperties = await policyClient.EvaluateAsync(User);
             AuthorizationModel responseModel = new AuthorizationModel() {

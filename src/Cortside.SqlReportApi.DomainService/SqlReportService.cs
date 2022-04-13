@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain;
@@ -190,18 +191,23 @@ namespace Cortside.SqlReportApi.DomainService {
             return result;
         }
 
-        public async Task<StreamContent> ExportReport(string name, IQueryCollection query, List<string> list) {
+        public async Task<MemoryStream> ExportReport(string name, IQueryCollection query, List<string> list) {
             var report = await ExecuteReport(name, query, list);
             var stream = new MemoryStream();
-            using (var writer = new StreamWriter(stream)) {
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture)) {
-                    csv.WriteRecord(report);
+            var writer = new StreamWriter(stream);
+            foreach (var row in report.Rows) {
+                var writeRow = new StringBuilder();
+                foreach (var column in row) {
+                    if (column.ToString().Contains(',')) {
+                        writeRow.Append($"\"{column}\",");
+                    } else {
+                        writeRow.Append($"{column},");
+                    }
                 }
+                writer.WriteLine(writeRow);
             }
-            var result = new StreamContent(stream);
-            result.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
-            result.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = $"{name}.csv" };
-            return result;
+            stream.Position = 0;
+            return stream;
         }
     }
 }

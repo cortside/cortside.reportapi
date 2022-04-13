@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
@@ -27,6 +28,6 @@ namespace Cortside.SqlReportApi.DomainService {
 
         Task<ReportResult> ExecuteReport(string name, IQueryCollection query, List<string> permissions);
 
-        Task<StreamContent> ExportReport(string name, IQueryCollection query, List<string> list);
+        Task<MemoryStream> ExportReport(string name, IQueryCollection query, List<string> list);
     }
 }
