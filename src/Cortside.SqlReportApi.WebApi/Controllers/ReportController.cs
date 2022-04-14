@@ -79,9 +79,10 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             var permissionsPrefix = "Sql Report";
             responseModel.Permissions = responseModel.Permissions.Select(p => $"{permissionsPrefix}.{p}").ToList();
             try {
-                Stream report = await svc.ExportReport(name, Request.Query, authProperties.Permissions.ToList());
-                var file = File(report, "application/octet-stream");
-                return file;
+                var report = await svc.ExecuteReport(name, Request.Query, authProperties.Permissions.ToList());
+                Stream result = svc.ExportReport(report);
+                var file = File(result, "application/octet-stream");
+                return new ObjectResult(file);
             } catch (ResourceNotFoundMessage) {
                 return new NotFoundResult();
             } catch (NotAuthorizedMessage) {

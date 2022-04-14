@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain;
 using Cortside.SqlReportApi.Exceptions;
-using CsvHelper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -191,21 +187,28 @@ namespace Cortside.SqlReportApi.DomainService {
             return result;
         }
 
-        public async Task<MemoryStream> ExportReport(string name, IQueryCollection query, List<string> list) {
-            var report = await ExecuteReport(name, query, list);
+        public Stream ExportReport(ReportResult report) {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);
+
+            // write header
+            foreach (var column in report.Columns) {
+                writer.Write($"{column.Name},");
+            }
+
+            // write body
             foreach (var row in report.Rows) {
-                var writeRow = new StringBuilder();
+                writer.WriteLine();
                 foreach (var column in row) {
                     if (column.ToString().Contains(',')) {
-                        writeRow.Append($"\"{column}\",");
+                        // handle commas
+                        writer.Write($"\"{column}\",");
                     } else {
-                        writeRow.Append($"{column},");
+                        writer.Write($"{column},");
                     }
                 }
-                writer.WriteLine(writeRow);
-            }
+            };
+            writer.Flush();
             stream.Position = 0;
             return stream;
         }

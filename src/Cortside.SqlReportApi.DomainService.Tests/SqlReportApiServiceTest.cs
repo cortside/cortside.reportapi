@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Cortside.Common.DomainEvent;
 using Cortside.SqlReportApi.Data;
@@ -198,6 +200,39 @@ namespace Cortside.SqlReportApi.DomainService.Tests {
                 //assert
                 result.Should().NotBeNull();
             }
+        }
+
+        [Fact]
+        public async Task ShouldExportReport() {
+            //arrange
+            var report = new ReportResult("my report") {
+                Columns = new List<ReportColumn> {
+                    new ReportColumn {
+                        Name = "column1"
+                    },
+                    new ReportColumn {
+                        Name = "column2"
+                    }
+                },
+                Rows = new List<object[]> {
+                    new object[] {
+                        "c1r1",
+                        "c2,r1"},
+                    new object[] {
+                        "c1r2",
+                        "c2r2"
+                    },
+                }
+            };
+
+            //act
+            var result = service.ExportReport(report);
+
+            //assert
+            result.CanRead.Should().BeTrue();
+            var reader = new StreamReader(result);
+            var content = reader.ReadToEnd();
+            content.Should().ContainAll("column1,", "column2,", "c1r1,", "\"c2,r1\",", "c1r2,", "c2r2,");
         }
     }
 }

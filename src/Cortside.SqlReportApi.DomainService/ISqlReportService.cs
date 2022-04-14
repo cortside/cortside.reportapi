@@ -28,6 +28,6 @@ namespace Cortside.SqlReportApi.DomainService {
 
         Task<ReportResult> ExecuteReport(string name, IQueryCollection query, List<string> permissions);
 
-        Task<MemoryStream> ExportReport(string name, IQueryCollection query, List<string> list);
+        Stream ExportReport(ReportResult report);
     }
 }
