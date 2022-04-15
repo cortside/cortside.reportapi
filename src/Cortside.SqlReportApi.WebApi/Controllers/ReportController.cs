@@ -81,8 +81,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             try {
                 var report = await svc.ExecuteReport(name, Request.Query, authProperties.Permissions.ToList());
                 Stream result = svc.ExportReport(report);
-                var file = File(result, "application/octet-stream");
-                return new ObjectResult(file);
+                return File(result, "application/octet-stream");
             } catch (ResourceNotFoundMessage) {
                 return new NotFoundResult();
             } catch (NotAuthorizedMessage) {

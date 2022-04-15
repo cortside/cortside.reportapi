@@ -262,8 +262,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             var result = await reportController.Export("report");
 
             //assert
-            var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeOfType<FileStreamResult>();
+            var viewResult = result.Should().BeAssignableTo<FileStreamResult>();
         }
     }
 }
