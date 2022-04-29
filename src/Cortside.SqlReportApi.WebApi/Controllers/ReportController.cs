@@ -1,4 +1,7 @@
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.DomainService;
@@ -54,6 +57,31 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             try {
                 var result = await svc.ExecuteReport(name, Request.Query, authProperties.Permissions.ToList());
                 return new ObjectResult(result);
+            } catch (ResourceNotFoundMessage) {
+                return new NotFoundResult();
+            } catch (NotAuthorizedMessage) {
+                return new UnauthorizedResult();
+            }
+        }
+
+        /// <summary>
+        /// Export report as csv
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{name}/export")]
+        public async Task<IActionResult> Export(string name) {
+            var authProperties = await policyClient.EvaluateAsync(User);
+            AuthorizationModel responseModel = new AuthorizationModel() {
+                Permissions = authProperties.Permissions.ToList()
+            };
+            var permissionsPrefix = "Sql Report";
+            responseModel.Permissions = responseModel.Permissions.Select(p => $"{permissionsPrefix}.{p}").ToList();
+            try {
+                var report = await svc.ExecuteReport(name, Request.Query, authProperties.Permissions.ToList());
+                Stream result = svc.ExportReport(report);
+                return File(result, "application/octet-stream");
             } catch (ResourceNotFoundMessage) {
                 return new NotFoundResult();
             } catch (NotAuthorizedMessage) {
