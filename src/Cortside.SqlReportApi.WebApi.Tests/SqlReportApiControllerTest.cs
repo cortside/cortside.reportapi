@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
@@ -211,6 +212,57 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
             viewResult.Which.Value.Should().BeEquivalentTo(reportGroup);
             serviceMock.Verify(s => s.GetReportGroups(), Times.Once);
+        }
+
+
+        [Fact]
+        public async void ExportReportShouldReturnObject() {
+            //arrange
+            var request = new Mock<HttpRequest>();
+            var context = new Mock<HttpContext>();
+            var dictionary = new Dictionary<string, StringValues>();
+            dictionary.Add("date", new StringValues("01/01/2000"));
+            var collection = new QueryCollection(dictionary);
+
+            request.SetupGet(x => x.Query).Returns(collection);
+            context.SetupGet(x => x.Request).Returns(request.Object);
+
+
+            var report = new ReportResult("my report") {
+                Columns = new List<ReportColumn> {
+                    new ReportColumn {
+                        Name = "column1"
+                    },
+                    new ReportColumn {
+                        Name = "column2"
+                    }
+                },
+                Rows = new List<object[]> {
+                    new object[] {
+                        "row1column1",
+                        "row1column2"},
+                    new object[] {
+                        "row2column1",
+                        "row2column2"
+                    },
+                }
+            };
+
+            using MemoryStream stream = new MemoryStream();
+            using StreamWriter writer = new StreamWriter(stream);
+            writer.WriteLine("column1", "column2");
+            writer.WriteLine("row1column1", "row1column2");
+            writer.WriteLine("row2column1", "row2column2");
+
+            reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
+            serviceMock.Setup(s => s.ExecuteReport(It.IsAny<string>(), It.IsAny<QueryCollection>(), It.IsAny<List<string>>())).Returns(Task.FromResult(report));
+            serviceMock.Setup(s => s.ExportReport(It.IsAny<ReportResult>())).Returns(stream);
+
+            //act
+            var result = await reportController.Export("report");
+
+            //assert
+            var viewResult = result.Should().BeAssignableTo<FileStreamResult>();
         }
     }
 }

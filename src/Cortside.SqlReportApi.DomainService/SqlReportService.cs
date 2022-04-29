@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain;
@@ -183,6 +185,32 @@ namespace Cortside.SqlReportApi.DomainService {
                 }
             }
             return result;
+        }
+
+        public Stream ExportReport(ReportResult report) {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+
+            // write header
+            foreach (var column in report.Columns) {
+                writer.Write($"{column.Name},");
+            }
+
+            // write body
+            foreach (var row in report.Rows) {
+                writer.WriteLine();
+                foreach (var column in row) {
+                    if (column.ToString().Contains(',')) {
+                        // handle commas
+                        writer.Write($"\"{column}\",");
+                    } else {
+                        writer.Write($"{column},");
+                    }
+                }
+            };
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
     }
 }
