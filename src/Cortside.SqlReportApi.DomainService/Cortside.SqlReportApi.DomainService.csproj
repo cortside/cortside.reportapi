@@ -22,7 +22,6 @@
     <PackageReference Include="RestSharp" Version="108.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cortside.DomainEvent.Events\Cortside.DomainEvent.Events.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.Configuration\Cortside.SqlReportApi.Configuration.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.Data\Cortside.SqlReportApi.Data.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.Domain\Cortside.SqlReportApi.Domain.csproj" />

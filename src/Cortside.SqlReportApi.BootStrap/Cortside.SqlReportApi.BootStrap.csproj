@@ -20,10 +20,8 @@
     <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.2.22" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cortside.DomainEvent.Events\Cortside.DomainEvent.Events.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.Configuration\Cortside.SqlReportApi.Configuration.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.Data\Cortside.SqlReportApi.Data.csproj" />
-    <ProjectReference Include="..\Cortside.SqlReportApi.DomainEvent\Cortside.SqlReportApi.DomainEvent.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.DomainService\Cortside.SqlReportApi.DomainService.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.Facade\Cortside.SqlReportApi.Facade.csproj" />
   </ItemGroup>

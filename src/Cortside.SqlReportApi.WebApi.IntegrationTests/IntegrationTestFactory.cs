@@ -3,8 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Cortside.DomainEvent;
-using Cortside.DomainEvent.Stub;
 using Cortside.MockServer;
 using Cortside.MockServer.AccessControl;
 using Cortside.MockServer.AccessControl.Models;
@@ -40,7 +38,6 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
                 .ConfigureBuilder<CommonMock>()
                 .ConfigureBuilder(new IdentityServerMock("./Data/discovery.json", "./Data/jwks.json"))
                 .ConfigureBuilder(new SubjectMock("./Data/subjects.json"));
-            //.ConfigureBuilder<CatalogMock>();
 
             var section = Configuration.GetSection("HealthCheckHostedService");
             section["Checks:1:Value"] = $"{MockServer.Url}/api/health";
@@ -59,16 +56,6 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
             var distributedLockConfig = Configuration.GetSection("DistributedLock");
             distributedLockConfig["UseRedisLockProvider"] = "false";
 
-            var loanservicingConfig = Configuration.GetSection("LoanServicingApi");
-            loanservicingConfig["BaseUrl"] = MockServer.Url;
-            var loanservicingAuthConfig = loanservicingConfig.GetSection("Authentication");
-            loanservicingAuthConfig["Url"] = $"{MockServer.Url}/connect/token";
-
-            var userConfig = Configuration.GetSection("CatalogApi");
-            userConfig["ServiceUrl"] = $"{MockServer.Url}";
-            var userAuthConfig = userConfig.GetSection("Authentication");
-            userAuthConfig["Url"] = $"{MockServer.Url}/connect/token";
-
             MockServer.WaitForStart();
 
             return Host.CreateDefaultBuilder()
@@ -83,7 +70,6 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
                             RegisterDbContext(sc);
                             RegisterFileSystemDistributedLock(sc);
                         }
-                        RegisterDomainEventPublisher(sc);
                     });
                 })
                 .UseSerilog(Log.Logger);
@@ -155,24 +141,6 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
             }
         }
 
-        private void RegisterDomainEventPublisher(IServiceCollection services) {
-            // Remove the real IDomainEventPublisher
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDomainEventPublisher));
-            if (descriptor != null) {
-                services.Remove(descriptor);
-            }
-
-            // Remove the real IDomainEventReceiver
-            descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDomainEventReceiver));
-            if (descriptor != null) {
-                services.Remove(descriptor);
-            }
-
-            services.AddSingleton<IStubBroker, ConcurrentQueueBroker>();
-            services.AddTransient<IDomainEventPublisher, DomainEventPublisherStub>();
-            services.AddTransient<IDomainEventReceiver, DomainEventReceiverStub>();
-        }
-
         private void RegisterFileSystemDistributedLock(IServiceCollection services) {
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDistributedLockProvider));
             if (descriptor != null) {
@@ -187,9 +155,7 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
 
         public HttpClient UnauthorizedClient {
             get {
-                if (_UnauthorizedClient == null) {
-                    _UnauthorizedClient = CreateDefaultClient();
-                }
+                _UnauthorizedClient ??= CreateDefaultClient();
                 return _UnauthorizedClient;
             }
         }
