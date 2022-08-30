@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
-using Cortside.SqlReportApi.Domain;
+using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Cortside.SqlReportApi.DomainService {
-
     public class SqlReportService : ISqlReportService {
         protected DatabaseContext db;
         private readonly ILogger<SqlReportService> logger;
@@ -40,7 +38,7 @@ namespace Cortside.SqlReportApi.DomainService {
             return report;
         }
 
-        public IEnumerable<Report> GetReports() {
+        public IList<Report> GetReports() {
             logger.LogInformation($"Retriving all Reports.");
             var reports = db.Reports
                 .Include(r => r.ReportArguments)
@@ -55,7 +53,7 @@ namespace Cortside.SqlReportApi.DomainService {
             return reports;
         }
 
-        public IEnumerable<ReportGroup> GetReportGroups() {
+        public IList<ReportGroup> GetReportGroups() {
             logger.LogInformation($"Retriving all ReportGroups.");
             return db.ReportGroups.ToList();
         }
@@ -69,7 +67,7 @@ namespace Cortside.SqlReportApi.DomainService {
             return reportGroup;
         }
 
-        public IEnumerable<ReportArgument> GetReportArguments() {
+        public IList<ReportArgument> GetReportArguments() {
             var args = db.ReportArguments.Include(y => y.ReportArgumentQuery).ToList();
             foreach (var arg in args) {
                 arg.ArgValues = GetArgumentPairs(arg);
@@ -114,7 +112,7 @@ namespace Cortside.SqlReportApi.DomainService {
             return arg;
         }
 
-        public IEnumerable<ReportArgumentQuery> GetReportArgumentQueries() {
+        public IList<ReportArgumentQuery> GetReportArgumentQueries() {
             return db.ReportArgumentQuerys.ToList();
         }
 
@@ -133,15 +131,13 @@ namespace Cortside.SqlReportApi.DomainService {
             //    throw new NotAuthorizedMessage($"The requested resource requires the permission: {report.Permission}.");
             //}
 
-            ReportResult result;
-
-            IList<ReportRow> rows = new List<ReportRow>();
+            ReportResult result = new ReportResult(name);
 
             using (var cmd = db.Database.GetDbConnection().CreateCommand()) {
                 cmd.CommandText = name;
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                await db.Database.GetDbConnection().OpenAsync();
+                await db.Database.GetDbConnection().OpenAsync().ConfigureAwait(false);
 
                 try {
                     var argList = new List<string>();
@@ -158,30 +154,35 @@ namespace Cortside.SqlReportApi.DomainService {
                         cmd.Parameters.Add(p);
                     }
 
-                    using (var reader = await cmd.ExecuteReaderAsync()) {
-                        result = new ReportResult(name);
-                        var schema = reader.GetSchemaTable();
+                    using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false)) {
+                        var rs = 0;
+                        do {
+                            Console.WriteLine("Result set: {0}", ++rs);
+                            var resultset = new ResultSet();
+                            result.ResultSets.Add(resultset);
 
-                        foreach (DataRow myField in schema.Rows) {
-                            var col = new ReportColumn {
-                                Name = myField[schema.Columns.IndexOf("ColumnName")].ToString(),
-                                DataType = myField[schema.Columns.IndexOf("DataType")].ToString(),
-                                Ordinal = (int)myField[schema.Columns.IndexOf("ColumnOrdinal")] - 1
-                            };
-                            result.Columns.Add(col);
-                        };
+                            var schema = await reader.GetSchemaTableAsync().ConfigureAwait(false);
+                            foreach (DataRow row in schema.Rows) {
+                                var column = new ReportColumn {
+                                    Name = row[schema.Columns.IndexOf("ColumnName")].ToString(),
+                                    DataType = row[schema.Columns.IndexOf("DataType")].ToString(),
+                                    Ordinal = (int)row[schema.Columns.IndexOf("ColumnOrdinal")]
+                                };
+                                resultset.Columns.Add(column);
+                            }
 
-                        while (reader.Read()) {
-                            var row = new object[reader.FieldCount];
-                            reader.GetValues(row);
-                            result.Rows.Add(row);
-                        }
+                            while (await reader.ReadAsync().ConfigureAwait(false)) {
+                                var row = new object[reader.FieldCount];
+                                reader.GetValues(row);
+                                resultset.Rows.Add(row);
+                            }
+                        } while (await reader.NextResultAsync().ConfigureAwait(false));
                     }
                 } catch (Exception ex) {
                     logger.LogError(ex, "Exception occured when requesting report from database");
                     throw;
                 } finally {
-                    await db.Database.GetDbConnection().CloseAsync();
+                    await db.Database.GetDbConnection().CloseAsync().ConfigureAwait(false);
                 }
             }
             return result;
@@ -191,23 +192,26 @@ namespace Cortside.SqlReportApi.DomainService {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);
 
-            // write header
-            foreach (var column in report.Columns) {
-                writer.Write($"{column.Name},");
-            }
+            foreach (var resultset in report.ResultSets) {
+                // write header
+                foreach (var column in resultset.Columns) {
+                    writer.Write($"{column.Name},");
+                }
 
-            // write body
-            foreach (var row in report.Rows) {
-                writer.WriteLine();
-                foreach (var column in row) {
-                    if (column.ToString().Contains(',')) {
-                        // handle commas
-                        writer.Write($"\"{column}\",");
-                    } else {
-                        writer.Write($"{column},");
+                // write body
+                foreach (var row in resultset.Rows) {
+                    writer.WriteLine();
+                    foreach (var column in row) {
+                        if (column.ToString().Contains(',')) {
+                            // handle commas
+                            writer.Write($"\"{column}\",");
+                        } else {
+                            writer.Write($"{column},");
+                        }
                     }
                 }
-            };
+                writer.WriteLine();
+            }
             writer.Flush();
             stream.Position = 0;
             return stream;

@@ -4,28 +4,23 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
-    public class SettingsTest : IClassFixture<TestWebApplicationFactory<Startup>> {
-        private readonly TestWebApplicationFactory<Startup> fixture;
-        private readonly ITestOutputHelper testOutputHelper;
+    public class SettingsTest : IClassFixture<IntegrationTestFactory<Startup>> {
         private readonly HttpClient testServerClient;
 
-        public SettingsTest(TestWebApplicationFactory<Startup> fixture, ITestOutputHelper testOutputHelper) {
-            this.fixture = fixture;
-            this.testOutputHelper = testOutputHelper;
+        public SettingsTest(IntegrationTestFactory<Startup> fixture) {
             testServerClient = fixture.CreateClient(new WebApplicationFactoryClientOptions {
                 AllowAutoRedirect = false
             });
         }
 
         [Fact]
-        public async Task Test() {
+        public async Task TestAsync() {
             //arrange
 
             //act
-            var response = await testServerClient.GetAsync("api/settings");
+            var response = await testServerClient.GetAsync("api/settings").ConfigureAwait(false);
 
             //assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);

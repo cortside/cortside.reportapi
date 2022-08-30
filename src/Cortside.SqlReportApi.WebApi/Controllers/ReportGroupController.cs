@@ -1,37 +1,43 @@
-using Cortside.SqlReportApi.Data;
+using System.Threading.Tasks;
+using Cortside.AspNetCore.Common.Models;
+using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.DomainService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PolicyServer.Runtime.Client;
 
-namespace Cortside.SqlReportApi.WebApi.Controllers {
-
+namespace Cortside.SqlReportApi.WebApi.Controllers
+{
     /// <summary>
     /// Access functionality for report groups
     /// </summary>
-    [Route(BaseRoute + "reportgroups")]
-    public class ReportGroupController : BaseController {
+    [Route("api/v{version:apiVersion}/reportgroups")]
+    [ApiVersion("1")]
+    [Produces("application/json")]
+    [ApiController]
+    public class ReportGroupController : Controller
+    {
+        private readonly ISqlReportService svc;
 
         /// <summary>
         /// Initialize the controller
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="svc"></param>
-        /// <param name="policyClient"></param>
-        public ReportGroupController(DatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) : base(db, svc, policyClient) {
+        public ReportGroupController(ISqlReportService svc)
+        {
+            this.svc = svc;
         }
 
         /// <summary>
         /// Get all report groups
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
-        public IActionResult Get() {
-            var result = svc.GetReportGroups();
-            if (result == null) {
-                return NotFound();
-            }
-            return new ObjectResult(result);
+        [HttpGet("")]
+        [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get()
+        {
+            var groups = svc.GetReportGroups();
+            var result = new ListResult<ReportGroup>(groups);
+            return Ok(result);
         }
 
         /// <summary>
@@ -40,13 +46,15 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
-        public IActionResult Get(int id) {
+        [ProducesResponseType(typeof(ReportGroup), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(int id)
+        {
             var result = svc.GetReportGroup(id);
-            if (result == null) {
+            if (result == null)
+            {
                 return NotFound();
             }
-            return new ObjectResult(result);
+            return Ok(result);
         }
     }
 }

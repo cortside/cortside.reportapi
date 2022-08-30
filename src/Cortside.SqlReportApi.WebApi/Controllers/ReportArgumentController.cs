@@ -1,22 +1,27 @@
-using Cortside.SqlReportApi.Data;
+using Cortside.AspNetCore.Common.Models;
+using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.DomainService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PolicyServer.Runtime.Client;
 
 namespace Cortside.SqlReportApi.WebApi.Controllers {
-
     /// <summary>
     /// Access functionality for report arguments
     /// </summary>
-    [Route(BaseRoute + "arguments")]
-    public class ReportArgumentController : BaseController {
+    [Route("api/v{version:apiVersion}/arguments")]
+    [ApiVersion("1")]
+    [Produces("application/json")]
+    [ApiController]
+    public class ReportArgumentController : Controller {
+        private readonly ISqlReportService svc;
 
         /// <summary>
         /// Initialize the controller
         /// </summary>
         /// <param name="db"></param>
         /// <param name="svc"></param>
-        public ReportArgumentController(DatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) : base(db, svc, policyClient) {
+        public ReportArgumentController(ISqlReportService svc) {
+            this.svc = svc;
         }
 
         /// <summary>
@@ -24,7 +29,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
+        [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
         public IActionResult Get() {
             var result = svc.GetReportArguments();
             if (result == null) {
@@ -39,7 +44,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
+        [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
         public IActionResult Get(int id) {
             var result = svc.GetReportArgument(id);
             if (result == null) {
