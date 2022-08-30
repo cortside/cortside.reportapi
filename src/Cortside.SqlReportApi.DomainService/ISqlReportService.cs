@@ -5,10 +5,8 @@ using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Cortside.SqlReportApi.DomainService
-{
-    public interface ISqlReportService
-    {
+namespace Cortside.SqlReportApi.DomainService {
+    public interface ISqlReportService {
         Report GetReport(string name);
 
         IList<Report> GetReports();
@@ -25,7 +23,7 @@ namespace Cortside.SqlReportApi.DomainService
 
         ReportArgumentQuery GetReportArgumentQuery(int id);
 
-        Task<ReportResult> ExecuteReport(string name, IQueryCollection query, List<string> permissions);
+        Task<ReportResult> ExecuteReportAsync(string name, IQueryCollection query, List<string> permissions);
 
         Stream ExportReport(ReportResult report);
     }

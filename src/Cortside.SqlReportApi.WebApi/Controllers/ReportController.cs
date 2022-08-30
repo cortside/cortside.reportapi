@@ -40,7 +40,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get() {
+        public async Task<IActionResult> GetAsync() {
             var result = svc.GetReports();
             if (result == null) {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <returns></returns>
         [HttpGet("{name}")]
         [ProducesResponseType(typeof(ReportResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(string name) {
+        public async Task<IActionResult> GetAsync(string name) {
             var authProperties = await policyClient.EvaluateAsync(User).ConfigureAwait(false);
             AuthorizationModel responseModel = new AuthorizationModel() {
                 Permissions = authProperties.Permissions.ToList()
@@ -63,7 +63,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             var permissionsPrefix = "Sql Report";
             responseModel.Permissions = responseModel.Permissions.Select(p => $"{permissionsPrefix}.{p}").ToList();
             try {
-                var result = await svc.ExecuteReport(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
+                var result = await svc.ExecuteReportAsync(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
                 return new ObjectResult(result);
             } catch (ResourceNotFoundMessage) {
                 return new NotFoundResult();
@@ -79,7 +79,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <returns></returns>
         [HttpGet("{name}/export")]
         [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Export(string name) {
+        public async Task<IActionResult> ExportAsync(string name) {
             var authProperties = await policyClient.EvaluateAsync(User).ConfigureAwait(false);
             AuthorizationModel responseModel = new AuthorizationModel() {
                 Permissions = authProperties.Permissions.ToList()
@@ -87,7 +87,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             var permissionsPrefix = "Sql Report";
             responseModel.Permissions = responseModel.Permissions.ConvertAll(p => $"{permissionsPrefix}.{p}");
             try {
-                var report = await svc.ExecuteReport(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
+                var report = await svc.ExecuteReportAsync(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
                 Stream result = svc.ExportReport(report);
                 return File(result, "application/octet-stream");
             } catch (ResourceNotFoundMessage) {

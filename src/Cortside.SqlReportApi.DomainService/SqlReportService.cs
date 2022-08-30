@@ -120,7 +120,7 @@ namespace Cortside.SqlReportApi.DomainService {
             return db.ReportArgumentQuerys.Where(p => p.ReportArgumentQueryId.Equals(id)).SingleOrDefault();
         }
 
-        public async Task<ReportResult> ExecuteReport(string name, IQueryCollection args, List<string> permissions) {
+        public async Task<ReportResult> ExecuteReportAsync(string name, IQueryCollection args, List<string> permissions) {
             var report = GetReport(name);
             if (report == null) {
                 throw new ResourceNotFoundMessage($"Report {name} could not be found.");

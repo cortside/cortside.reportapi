@@ -5,8 +5,7 @@ using Cortside.SqlReportApi.DomainService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cortside.SqlReportApi.WebApi.Controllers
-{
+namespace Cortside.SqlReportApi.WebApi.Controllers {
     /// <summary>
     /// Access functionality for report groups
     /// </summary>
@@ -14,16 +13,14 @@ namespace Cortside.SqlReportApi.WebApi.Controllers
     [ApiVersion("1")]
     [Produces("application/json")]
     [ApiController]
-    public class ReportGroupController : Controller
-    {
+    public class ReportGroupController : Controller {
         private readonly ISqlReportService svc;
 
         /// <summary>
         /// Initialize the controller
         /// </summary>
         /// <param name="svc"></param>
-        public ReportGroupController(ISqlReportService svc)
-        {
+        public ReportGroupController(ISqlReportService svc) {
             this.svc = svc;
         }
 
@@ -33,8 +30,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("")]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get()
-        {
+        public async Task<IActionResult> GetAsync() {
             var groups = svc.GetReportGroups();
             var result = new ListResult<ReportGroup>(groups);
             return Ok(result);
@@ -47,11 +43,9 @@ namespace Cortside.SqlReportApi.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ReportGroup), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(int id)
-        {
+        public async Task<IActionResult> GetAsync(int id) {
             var result = svc.GetReportGroup(id);
-            if (result == null)
-            {
+            if (result == null) {
                 return NotFound();
             }
             return Ok(result);

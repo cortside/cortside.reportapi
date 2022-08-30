@@ -29,7 +29,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get() {
+        public async Task<IActionResult> GetAsync() {
             var result = svc.GetReportArgumentQueries();
             if (result == null) {
                 return NotFound();
@@ -43,7 +43,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <param name="id"></param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(int id) {
+        public async Task<IActionResult> GetAsync(int id) {
             var result = svc.GetReportArgumentQuery(id);
             if (result == null) {
                 return NotFound();
