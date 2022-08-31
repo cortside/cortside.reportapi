@@ -88,7 +88,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         }
 
         [Fact]
-        public async Task GetReportArgumentQueryShouldReturnObject() {
+        public async Task GetReportArgumentQueryShouldReturnObjectAsync() {
             //arrange
             var reportArgumentQuery = new ReportArgumentQuery() {
                 ArgQuery = "someQuery",
@@ -106,7 +106,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         }
 
         [Fact]
-        public async Task GetReportArgumentQueriesShouldReturnObject() {
+        public async Task GetReportArgumentQueriesShouldReturnObjectAsync() {
             //arrange
             var reportArgumentQuery = new List<ReportArgumentQuery>() {
                 new ReportArgumentQuery() {
@@ -126,7 +126,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         }
 
         [Fact]
-        public async Task GetReportShouldReturnReport() {
+        public async Task GetReportShouldReturnReportAsync() {
             //arrange
             var request = new Mock<HttpRequest>();
             var context = new Mock<HttpContext>();
@@ -158,7 +158,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         }
 
         [Fact]
-        public async Task GetReportsShouldReturnObject() {
+        public async Task GetReportsShouldReturnObjectAsync() {
             //arrange
             var report = new List<Report>() {
                 new Report() {
@@ -178,7 +178,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         }
 
         [Fact]
-        public async Task GetReportGroupShouldReturnObject() {
+        public async Task GetReportGroupShouldReturnObjectAsync() {
             //arrange
             var reportGroup = new ReportGroup() {
                 Name = "someGroup",
@@ -196,7 +196,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         }
 
         [Fact]
-        public async Task GetReportGroupsShouldReturnObject() {
+        public async Task GetReportGroupsShouldReturnObjectAsync() {
             //arrange
             var reportGroup = new List<ReportGroup>() {
                 new ReportGroup() {
@@ -218,7 +218,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
 
         [Fact]
-        public async void ExportReportShouldReturnObject() {
+        public async Task ExportReportShouldReturnObjectAsync() {
             //arrange
             var request = new Mock<HttpRequest>();
             var context = new Mock<HttpContext>();
