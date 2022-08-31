@@ -29,13 +29,14 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ListResult<ReportArgument>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync() {
             var result = await svc.GetReportArgumentsAsync().ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }
-            return new ObjectResult(result);
+            var results = new ListResult<ReportArgument>(result);
+            return new ObjectResult(results);
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ReportArgument), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync(int id) {
             var result = await svc.GetReportArgumentAsync(id).ConfigureAwait(false);
             if (result == null) {

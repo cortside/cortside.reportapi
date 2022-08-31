@@ -38,13 +38,14 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ListResult<Report>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync() {
             var result = await svc.GetReportsAsync().ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }
-            return new ObjectResult(result);
+            var results = new ListResult<Report>(result);
+            return new ObjectResult(results);
         }
 
         /// <summary>

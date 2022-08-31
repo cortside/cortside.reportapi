@@ -83,7 +83,8 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeEquivalentTo(reportArgument);
+            var content = viewResult.Which.Value as ListResult<ReportArgument>;
+            content.Results.Should().BeEquivalentTo(reportArgument);
             serviceMock.Verify(s => s.GetReportArgumentsAsync(), Times.Once);
         }
 
@@ -121,7 +122,8 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeEquivalentTo(reportArgumentQuery);
+            var content = viewResult.Which.Value as ListResult<ReportArgumentQuery>;
+            content.Results.Should().BeEquivalentTo(reportArgumentQuery);
             serviceMock.Verify(s => s.GetReportArgumentQueriesAsync(), Times.Once);
         }
 
@@ -173,7 +175,8 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeEquivalentTo(report);
+            var content = viewResult.Which.Value as ListResult<Report>;
+            content.Results.Should().BeEquivalentTo(report);
             serviceMock.Verify(s => s.GetReportsAsync(), Times.Once);
         }
 
