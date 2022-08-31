@@ -18,7 +18,6 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <summary>
         /// Initialize the controller
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="svc"></param>
         public ReportArgumentController(ISqlReportService svc) {
             this.svc = svc;

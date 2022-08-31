@@ -26,7 +26,6 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <summary>
         /// Initialize the base controller
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="svc"></param>
         /// <param name="policyClient"></param>
         public ReportController(ISqlReportService svc, IPolicyServerRuntimeClient policyClient) {
