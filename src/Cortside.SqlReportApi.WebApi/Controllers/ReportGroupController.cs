@@ -31,7 +31,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         [HttpGet("")]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync() {
-            var groups = svc.GetReportGroups();
+            var groups = await svc.GetReportGroupsAsync().ConfigureAwait(false);
             var result = new ListResult<ReportGroup>(groups);
             return Ok(result);
         }
@@ -44,7 +44,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ReportGroup), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync(int id) {
-            var result = svc.GetReportGroup(id);
+            var result = await svc.GetReportGroupAsync(id).ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }

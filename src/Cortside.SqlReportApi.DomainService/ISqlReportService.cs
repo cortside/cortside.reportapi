@@ -7,21 +7,21 @@ using Microsoft.AspNetCore.Http;
 
 namespace Cortside.SqlReportApi.DomainService {
     public interface ISqlReportService {
-        Report GetReport(string name);
+        Task<Report> GetReportAsync(string name);
 
-        IList<Report> GetReports();
+        Task<IList<Report>> GetReportsAsync();
 
-        IList<ReportGroup> GetReportGroups();
+        Task<IList<ReportGroup>> GetReportGroupsAsync();
 
-        ReportGroup GetReportGroup(int id);
+        Task<ReportGroup> GetReportGroupAsync(int id);
 
-        IList<ReportArgument> GetReportArguments();
+        Task<IList<ReportArgument>> GetReportArgumentsAsync();
 
-        ReportArgument GetReportArgument(int id);
+        Task<ReportArgument> GetReportArgumentAsync(int id);
 
-        IList<ReportArgumentQuery> GetReportArgumentQueries();
+        Task<IList<ReportArgumentQuery>> GetReportArgumentQueriesAsync();
 
-        ReportArgumentQuery GetReportArgumentQuery(int id);
+        Task<ReportArgumentQuery> GetReportArgumentQueryAsync(int id);
 
         Task<ReportResult> ExecuteReportAsync(string name, IQueryCollection query, List<string> permissions);
 

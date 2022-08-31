@@ -21,13 +21,13 @@ namespace Cortside.SqlReportApi.DomainService {
             this.logger = logger;
         }
 
-        public Report GetReport(string name) {
-            logger.LogInformation($"Retriving report {name}.");
-            var report = db.Reports
+        public async Task<Report> GetReportAsync(string name) {
+            logger.LogInformation("Retriving report {name}.", name);
+            var report = await db.Reports
                 .Include(r => r.ReportArguments)
                 .ThenInclude(y => y.ReportArgumentQuery)
                 .Include(g => g.ReportGroup)
-                .Where(p => p.Name.Equals(name)).SingleOrDefault();
+                .Where(p => p.Name.Equals(name)).SingleOrDefaultAsync().ConfigureAwait(false);
             if (report != null) {
                 foreach (var arg in report.ReportArguments) {
                     arg.ArgValues = GetArgumentPairs(arg);
@@ -38,13 +38,13 @@ namespace Cortside.SqlReportApi.DomainService {
             return report;
         }
 
-        public IList<Report> GetReports() {
-            logger.LogInformation($"Retriving all Reports.");
-            var reports = db.Reports
+        public async Task<IList<Report>> GetReportsAsync() {
+            logger.LogInformation("Retriving all Reports.");
+            var reports = await db.Reports
                 .Include(r => r.ReportArguments)
                 .ThenInclude(y => y.ReportArgumentQuery)
                 .Include(g => g.ReportGroup)
-                .ToList();
+                .ToListAsync().ConfigureAwait(false);
             foreach (var report in reports) {
                 foreach (var arg in report.ReportArguments) {
                     arg.ArgValues = GetArgumentPairs(arg);
@@ -53,22 +53,22 @@ namespace Cortside.SqlReportApi.DomainService {
             return reports;
         }
 
-        public IList<ReportGroup> GetReportGroups() {
-            logger.LogInformation($"Retriving all ReportGroups.");
-            return db.ReportGroups.ToList();
+        public async Task<IList<ReportGroup>> GetReportGroupsAsync() {
+            logger.LogInformation("Retriving all ReportGroups.");
+            return await db.ReportGroups.ToListAsync().ConfigureAwait(false);
         }
 
-        public ReportGroup GetReportGroup(int id) {
-            logger.LogInformation($"Retriving ReportGroup {id}.");
-            var reportGroup = db.ReportGroups.Where(p => p.ReportGroupId.Equals(id)).SingleOrDefault();
+        public async Task<ReportGroup> GetReportGroupAsync(int id) {
+            logger.LogInformation("Retriving ReportGroup {id}.", id);
+            var reportGroup = await db.ReportGroups.Where(p => p.ReportGroupId.Equals(id)).SingleOrDefaultAsync().ConfigureAwait(false);
             if (reportGroup == null) {
                 throw new ResourceNotFoundMessage($"ReportGroup {id} could not be found.");
             }
             return reportGroup;
         }
 
-        public IList<ReportArgument> GetReportArguments() {
-            var args = db.ReportArguments.Include(y => y.ReportArgumentQuery).ToList();
+        public async Task<IList<ReportArgument>> GetReportArgumentsAsync() {
+            var args = await db.ReportArguments.Include(y => y.ReportArgumentQuery).ToListAsync().ConfigureAwait(false);
             foreach (var arg in args) {
                 arg.ArgValues = GetArgumentPairs(arg);
             }
@@ -76,8 +76,8 @@ namespace Cortside.SqlReportApi.DomainService {
             return args;
         }
 
-        protected Dictionary<string, object> GetArgumentPairs(ReportArgument arg) {
-            if (arg != null && arg.ReportArgumentQueryId.HasValue) {
+        private Dictionary<string, object> GetArgumentPairs(ReportArgument arg) {
+            if (arg?.ReportArgumentQueryId.HasValue == true) {
                 var pairs = new Dictionary<string, object>();
 
                 using (var cmd = db.Database.GetDbConnection().CreateCommand()) {
@@ -104,32 +104,31 @@ namespace Cortside.SqlReportApi.DomainService {
             return null;
         }
 
-        public ReportArgument GetReportArgument(int id) {
-            var arg = db.ReportArguments.Include(y => y.ReportArgumentQuery).Where(p => p.ReportArgumentId.Equals(id)).SingleOrDefault();
+        public async Task<ReportArgument> GetReportArgumentAsync(int id) {
+            var arg = await db.ReportArguments.Include(y => y.ReportArgumentQuery).Where(p => p.ReportArgumentId.Equals(id)).SingleOrDefaultAsync().ConfigureAwait(false);
             if (arg != null) {
                 arg.ArgValues = GetArgumentPairs(arg);
             }
             return arg;
         }
 
-        public IList<ReportArgumentQuery> GetReportArgumentQueries() {
-            return db.ReportArgumentQuerys.ToList();
+        public async Task<IList<ReportArgumentQuery>> GetReportArgumentQueriesAsync() {
+            return await db.ReportArgumentQuerys.ToListAsync().ConfigureAwait(false);
         }
 
-        public ReportArgumentQuery GetReportArgumentQuery(int id) {
-            return db.ReportArgumentQuerys.Where(p => p.ReportArgumentQueryId.Equals(id)).SingleOrDefault();
+        public Task<ReportArgumentQuery> GetReportArgumentQueryAsync(int id) {
+            return db.ReportArgumentQuerys.Where(p => p.ReportArgumentQueryId.Equals(id)).SingleOrDefaultAsync();
         }
 
         public async Task<ReportResult> ExecuteReportAsync(string name, IQueryCollection args, List<string> permissions) {
-            var report = GetReport(name);
+            var report = await GetReportAsync(name);
             if (report == null) {
                 throw new ResourceNotFoundMessage($"Report {name} could not be found.");
             }
 
-            // TODO: for testing
-            //if (!permissions.Contains(report.Permission)) {
-            //    throw new NotAuthorizedMessage($"The requested resource requires the permission: {report.Permission}.");
-            //}
+            if (!permissions.Contains(report.Permission)) {
+                throw new NotAuthorizedMessage($"The requested resource requires the permission: {report.Permission}.");
+            }
 
             ReportResult result = new ReportResult(name);
 
@@ -140,7 +139,6 @@ namespace Cortside.SqlReportApi.DomainService {
                 await db.Database.GetDbConnection().OpenAsync().ConfigureAwait(false);
 
                 try {
-                    var argList = new List<string>();
                     foreach (var arg in report.ReportArguments) {
                         var p = cmd.CreateParameter();
                         p.ParameterName = arg.ArgName;

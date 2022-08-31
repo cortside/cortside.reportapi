@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Cortside.AspNetCore.Common.Models;
 using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.DomainService;
@@ -29,8 +30,8 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
-        public IActionResult Get() {
-            var result = svc.GetReportArguments();
+        public async Task<IActionResult> GetAsync() {
+            var result = await svc.GetReportArgumentsAsync().ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }
@@ -44,8 +45,8 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
-        public IActionResult Get(int id) {
-            var result = svc.GetReportArgument(id);
+        public async Task<IActionResult> GetAsync(int id) {
+            var result = await svc.GetReportArgumentAsync(id).ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }

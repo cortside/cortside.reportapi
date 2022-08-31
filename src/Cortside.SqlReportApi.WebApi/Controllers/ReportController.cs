@@ -40,7 +40,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         [HttpGet]
         [ProducesResponseType(typeof(ListResult<ReportGroup>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync() {
-            var result = svc.GetReports();
+            var result = await svc.GetReportsAsync().ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }
