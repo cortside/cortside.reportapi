@@ -1,7 +1,7 @@
-# cortside.webapistarter
+# cortside.sqlreport
 
 # Pre-Requisites
-* .NET 3.1 SDK
-* Visual Studio 2019
+* .NET 6.0 SDK
+* Visual Studio 2022
   
 
