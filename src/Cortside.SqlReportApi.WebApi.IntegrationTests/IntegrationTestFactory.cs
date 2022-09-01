@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Cortside.Common.Json;
 using Cortside.MockServer;
 using Cortside.MockServer.AccessControl;
 using Cortside.MockServer.AccessControl.Models;
@@ -19,6 +20,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Serilog;
 
 namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
@@ -29,6 +32,32 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
         private Subjects subjects;
         public MockHttpServer MockServer { get; private set; }
         private IConfiguration Configuration { get; set; }
+
+        public IntegrationTestFactory() {
+            JsonConvert.DefaultSettings = () => {
+                var settings = new JsonSerializerSettings();
+
+                settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                settings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
+
+                settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                settings.NullValueHandling = NullValueHandling.Include;
+                settings.DefaultValueHandling = DefaultValueHandling.Include;
+
+                settings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                settings.DateParseHandling = DateParseHandling.DateTimeOffset;
+                settings.Converters.Add(new IsoTimeSpanConverter());
+
+                //settings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
+                //settings.Converters.Add(new IsoDateTimeConverter {
+                //    DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
+                //});
+                //settings.Converters.Add(new IsoTimeSpanConverter());
+                return settings;
+            };
+        }
 
         protected override IHostBuilder CreateHostBuilder() {
             SetupConfiguration();
@@ -58,7 +87,7 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
 
             MockServer.WaitForStart();
 
-            return Host.CreateDefaultBuilder()
+            var host = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration(builder => builder.AddConfiguration(Configuration))
                 .ConfigureWebHostDefaults(webbuilder => {
                     webbuilder
@@ -73,6 +102,8 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests {
                     });
                 })
                 .UseSerilog(Log.Logger);
+
+            return host;
         }
 
         private void SetupLogger() {

@@ -7,17 +7,12 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
     public class HealthTest : IClassFixture<IntegrationTestFactory<Startup>> {
-        private readonly IntegrationTestFactory<Startup> fixture;
-        private readonly ITestOutputHelper testOutputHelper;
         private readonly HttpClient testServerClient;
 
-        public HealthTest(IntegrationTestFactory<Startup> fixture, ITestOutputHelper testOutputHelper) {
-            this.fixture = fixture;
-            this.testOutputHelper = testOutputHelper;
+        public HealthTest(IntegrationTestFactory<Startup> fixture) {
             testServerClient = fixture.CreateClient(new WebApplicationFactoryClientOptions {
                 AllowAutoRedirect = false
             });

@@ -132,7 +132,7 @@ namespace Cortside.SqlReportApi.DomainService {
 
             ReportResult result = new ReportResult(name);
 
-            using (var cmd = db.Database.GetDbConnection().CreateCommand()) {
+            await using (var cmd = db.Database.GetDbConnection().CreateCommand()) {
                 cmd.CommandText = name;
                 cmd.CommandType = CommandType.StoredProcedure;
 
@@ -152,10 +152,8 @@ namespace Cortside.SqlReportApi.DomainService {
                         cmd.Parameters.Add(p);
                     }
 
-                    using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false)) {
-                        var rs = 0;
+                    await using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false)) {
                         do {
-                            Console.WriteLine("Result set: {0}", ++rs);
                             var resultset = new ResultSet();
                             result.ResultSets.Add(resultset);
 

@@ -10,12 +10,22 @@ namespace Cortside.SqlReportApi.WebApi.Installers {
     public class NewtonsoftInstaller : IInstaller {
         public void Install(IServiceCollection services, IConfigurationRoot configuration) {
             JsonConvert.DefaultSettings = () => {
-                var settings = new JsonSerializerSettings();
+                var settings = new JsonSerializerSettings {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
                 settings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
-                settings.Converters.Add(new IsoDateTimeConverter {
-                    DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
-                });
                 settings.Converters.Add(new IsoTimeSpanConverter());
+
+                settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                settings.NullValueHandling = NullValueHandling.Include;
+                settings.DefaultValueHandling = DefaultValueHandling.Include;
+
+                settings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                settings.DateParseHandling = DateParseHandling.DateTimeOffset;
+
                 return settings;
             };
         }

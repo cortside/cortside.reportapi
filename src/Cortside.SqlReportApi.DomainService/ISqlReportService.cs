@@ -23,7 +23,7 @@ namespace Cortside.SqlReportApi.DomainService {
 
         Task<ReportArgumentQuery> GetReportArgumentQueryAsync(int id);
 
-        Task<ReportResult> ExecuteReportAsync(string name, IQueryCollection query, List<string> permissions);
+        Task<ReportResult> ExecuteReportAsync(string name, IQueryCollection args, List<string> permissions);
 
         Stream ExportReport(ReportResult report);
     }
