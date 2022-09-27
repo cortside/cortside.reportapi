@@ -80,7 +80,6 @@ namespace Cortside.SqlReportApi.WebApi {
             });
 
             services.AddControllers(options => {
-                options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 options.CacheProfiles.Add("default", new CacheProfile {
                     Duration = 30,
                     Location = ResponseCacheLocation.Any
