@@ -35,20 +35,5 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             var result = new ListResult<ReportGroup>(groups);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Get a report group by ID
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ReportGroup), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAsync(int id) {
-            var result = await svc.GetReportGroupAsync(id).ConfigureAwait(false);
-            if (result == null) {
-                return NotFound();
-            }
-            return Ok(result);
-        }
     }
 }

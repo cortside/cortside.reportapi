@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Cortside.AspNetCore.Common.Models;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain.Entities;
-using Cortside.SqlReportApi.DomainService;
 using Cortside.SqlReportApi.Exceptions;
+using Cortside.SqlReportApi.Facade;
 using Cortside.SqlReportApi.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,16 +20,16 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
     [Produces("application/json")]
     [ApiController]
     public class ReportController : Controller {
-        private readonly ISqlReportService svc;
+        private readonly ReportFacade facade;
         private readonly IPolicyServerRuntimeClient policyClient;
 
         /// <summary>
         /// Initialize the base controller
         /// </summary>
-        /// <param name="svc"></param>
+        /// <param name="facade"></param>
         /// <param name="policyClient"></param>
-        public ReportController(ISqlReportService svc, IPolicyServerRuntimeClient policyClient) {
-            this.svc = svc;
+        public ReportController(ReportFacade facade, IPolicyServerRuntimeClient policyClient) {
+            this.facade = facade;
             this.policyClient = policyClient;
         }
 
@@ -40,7 +40,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         [HttpGet]
         [ProducesResponseType(typeof(ListResult<Report>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAsync() {
-            var result = await svc.GetReportsAsync().ConfigureAwait(false);
+            var result = await facade.GetReportsAsync().ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }
@@ -63,7 +63,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             var permissionsPrefix = "Sql Report";
             responseModel.Permissions = responseModel.Permissions.Select(p => $"{permissionsPrefix}.{p}").ToList();
             try {
-                var result = await svc.ExecuteReportAsync(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
+                var result = await facade.ExecuteReportAsync(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
                 return new ObjectResult(result);
             } catch (ResourceNotFoundMessage) {
                 return new NotFoundResult();
@@ -87,8 +87,8 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
             var permissionsPrefix = "Sql Report";
             responseModel.Permissions = responseModel.Permissions.ConvertAll(p => $"{permissionsPrefix}.{p}");
             try {
-                var report = await svc.ExecuteReportAsync(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
-                Stream result = svc.ExportReport(report);
+                var report = await facade.ExecuteReportAsync(name, Request.Query, authProperties.Permissions.ToList()).ConfigureAwait(false);
+                Stream result = facade.ExportReport(report);
                 return File(result, "application/octet-stream");
             } catch (ResourceNotFoundMessage) {
                 return new NotFoundResult();

@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cortside.SqlReportApi.Domain\Cortside.SqlReportApi.Domain.csproj" />
+    <ProjectReference Include="..\Cortside.SqlReportApi.Exceptions\Cortside.SqlReportApi.Exceptions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />

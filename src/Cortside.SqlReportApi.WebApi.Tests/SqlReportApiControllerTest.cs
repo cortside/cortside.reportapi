@@ -234,25 +234,26 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
 
             var report = new ReportResult("my report") {
-                ResultSets = { new ResultSet {
-                Columns = new List<ReportColumn> {
-                    new ReportColumn {
-                        Name = "column1"
-                    },
-                    new ReportColumn {
-                        Name = "column2"
+                ResultSets = {
+                    new ResultSet {
+                        Columns = new List<ReportColumn> {
+                            new ReportColumn {
+                                Name = "column1"
+                            },
+                            new ReportColumn {
+                                Name = "column2"
+                            }
+                        },
+                        Rows = new List<object[]> {
+                            new object[] {
+                                "row1column1",
+                                "row1column2"},
+                            new object[] {
+                                "row2column1",
+                                "row2column2"
+                            },
+                        }
                     }
-                },
-                Rows = new List<object[]> {
-                    new object[] {
-                        "row1column1",
-                        "row1column2"},
-                    new object[] {
-                        "row2column1",
-                        "row2column2"
-                    },
-                }
-                }
                 }
             };
 

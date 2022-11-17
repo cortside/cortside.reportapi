@@ -1,5 +1,6 @@
 using Cortside.SqlReportApi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Cortside.SqlReportApi.Data {
     public interface IDatabaseContext {
@@ -7,5 +8,7 @@ namespace Cortside.SqlReportApi.Data {
         DbSet<Report> Reports { get; set; }
         DbSet<ReportArgument> ReportArguments { get; set; }
         DbSet<ReportArgumentQuery> ReportArgumentQuerys { get; set; }
+
+        DatabaseFacade Database { get; }
     }
 }

@@ -8,11 +8,9 @@ namespace Cortside.SqlReportApi.BootStrap {
             installers = new List<IInstaller> {
                 new HealthInstaller(),
                 new DbContextInstaller(),
-                //new RepositoryInstaller(),
+                new RepositoryInstaller(),
                 new DomainServiceInstaller(),
-                new MiniProfilerInstaller(),
-                new EncryptionInstaller()
-                //new FacadeInstaller()
+                new FacadeInstaller()
             };
         }
     }

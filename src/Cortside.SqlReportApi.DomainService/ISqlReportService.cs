@@ -3,10 +3,13 @@ using System.IO;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain.Entities;
+using Cortside.SqlReportApi.Dto;
 using Microsoft.AspNetCore.Http;
 
-namespace Cortside.SqlReportApi.DomainService {
-    public interface ISqlReportService {
+namespace Cortside.SqlReportApi.DomainService
+{
+    public interface ISqlReportService
+    {
         Task<Report> GetReportAsync(string name);
 
         Task<IList<Report>> GetReportsAsync();

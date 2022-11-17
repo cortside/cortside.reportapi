@@ -74,7 +74,6 @@ namespace Cortside.SqlReportApi.WebApi {
             // setup and register boostrapper and it's installers
             services.AddBootStrapper<DefaultApplicationBootStrapper>(Configuration, o => {
                 o.AddInstaller(new NewtonsoftInstaller());
-                //o.AddInstaller(new ModelMapperInstaller());
             });
         }
 
