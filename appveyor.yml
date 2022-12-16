@@ -16,6 +16,8 @@ environment:
   SONAR_TOKEN:
     secure: fNmV/P8zSNwd3LWpzw2nnm807oe1Hr0gr11hTItGCXmnVQ0tHN1ESPUjLYjsXmpG
   SONAR_PROJECT: cortside_cortside.sqlreportapi
+  RESTRICTED_WORDS:
+    secure: y2oCk9wYmgBAzk4m1tsSFUOlcEePEjozzMCfC0p6NQI=
 
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
@@ -32,6 +34,7 @@ before_build:
 - appveyor-retry dotnet restore src -v Minimal
 - set DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%
 - dotnet --info
+- ps: ./prebuild.ps1
 
 build:
   publish_nuget: true
