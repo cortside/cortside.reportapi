@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Cortside.AspNetCore.Common.Models;
 using Cortside.SqlReportApi.Data;
-using Cortside.SqlReportApi.Domain;
+using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.DomainService;
 using Cortside.SqlReportApi.WebApi.Controllers;
 using FluentAssertions;
@@ -31,10 +32,10 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         public SqlReportApiControllerTest() : base() {
             serviceMock = testFixture.Mock<ISqlReportService>();
             policyClientMock = new Mock<IPolicyServerRuntimeClient>();
-            reportArgumentController = new ReportArgumentController(testFixture.GetDatabaseContext(), serviceMock.Object, policyClientMock.Object);
-            reportArgumentQueryController = new ReportArgumentQueryController(testFixture.GetDatabaseContext(), serviceMock.Object, policyClientMock.Object);
-            reportController = new ReportController(testFixture.GetDatabaseContext(), serviceMock.Object, policyClientMock.Object);
-            reportGroupController = new ReportGroupController(testFixture.GetDatabaseContext(), serviceMock.Object, policyClientMock.Object);
+            reportArgumentController = new ReportArgumentController(serviceMock.Object);
+            reportArgumentQueryController = new ReportArgumentQueryController(serviceMock.Object);
+            reportController = new ReportController(serviceMock.Object, policyClientMock.Object);
+            reportGroupController = new ReportGroupController(serviceMock.Object);
 
             var configurationSection = new Mock<IConfigurationSection>();
             var configuration = new Mock<IConfiguration>();
@@ -47,26 +48,26 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
         }
 
         [Fact]
-        public void GetReportArgumentShouldReturnObject() {
+        public async Task GetReportArgumentShouldReturnObjectAsync() {
             //arrange
             var reportArgument = new ReportArgument() {
                 ReportArgumentId = 1,
                 ArgName = "argName",
                 ArgType = "string"
             };
-            serviceMock.Setup(s => s.GetReportArgument(It.IsAny<int>())).Returns(reportArgument);
+            serviceMock.Setup(s => s.GetReportArgumentAsync(It.IsAny<int>())).ReturnsAsync(reportArgument);
 
             //act
-            var result = reportArgumentController.Get(1);
+            var result = await reportArgumentController.GetAsync(1).ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
             viewResult.Which.Value.Should().BeEquivalentTo(reportArgument);
-            serviceMock.Verify(s => s.GetReportArgument(It.IsAny<int>()), Times.Once);
+            serviceMock.Verify(s => s.GetReportArgumentAsync(It.IsAny<int>()), Times.Once);
         }
 
         [Fact]
-        public void GetReportArgumentsShouldReturnObject() {
+        public async Task GetReportArgumentsShouldReturnObjectAsync() {
             //arrange
             var reportArgument = new List<ReportArgument>() {
                 new ReportArgument() {
@@ -75,37 +76,38 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
                     ArgType = "string"
                 }
             };
-            serviceMock.Setup(s => s.GetReportArguments()).Returns(reportArgument);
+            serviceMock.Setup(s => s.GetReportArgumentsAsync()).ReturnsAsync(reportArgument);
 
             //act
-            var result = reportArgumentController.Get();
+            var result = await reportArgumentController.GetAsync().ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeEquivalentTo(reportArgument);
-            serviceMock.Verify(s => s.GetReportArguments(), Times.Once);
+            var content = viewResult.Which.Value as ListResult<ReportArgument>;
+            content.Results.Should().BeEquivalentTo(reportArgument);
+            serviceMock.Verify(s => s.GetReportArgumentsAsync(), Times.Once);
         }
 
         [Fact]
-        public void GetReportArgumentQueryShouldReturnObject() {
+        public async Task GetReportArgumentQueryShouldReturnObjectAsync() {
             //arrange
             var reportArgumentQuery = new ReportArgumentQuery() {
                 ArgQuery = "someQuery",
                 ReportArgumentQueryId = 1
             };
-            serviceMock.Setup(s => s.GetReportArgumentQuery(It.IsAny<int>())).Returns(reportArgumentQuery);
+            serviceMock.Setup(s => s.GetReportArgumentQueryAsync(It.IsAny<int>())).ReturnsAsync(reportArgumentQuery);
 
             //act
-            var result = reportArgumentQueryController.Get(1);
+            var result = await reportArgumentQueryController.GetAsync(1).ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
             viewResult.Which.Value.Should().BeEquivalentTo(reportArgumentQuery);
-            serviceMock.Verify(s => s.GetReportArgumentQuery(It.IsAny<int>()), Times.Once);
+            serviceMock.Verify(s => s.GetReportArgumentQueryAsync(It.IsAny<int>()), Times.Once);
         }
 
         [Fact]
-        public async Task GetReportArgumentQueriesShouldReturnObject() {
+        public async Task GetReportArgumentQueriesShouldReturnObjectAsync() {
             //arrange
             var reportArgumentQuery = new List<ReportArgumentQuery>() {
                 new ReportArgumentQuery() {
@@ -113,19 +115,20 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
                     ReportArgumentQueryId = 1
                 }
             };
-            serviceMock.Setup(s => s.GetReportArgumentQueries()).Returns(reportArgumentQuery);
+            serviceMock.Setup(s => s.GetReportArgumentQueriesAsync()).ReturnsAsync(reportArgumentQuery);
 
             //act
-            var result = await reportArgumentQueryController.Get();
+            var result = await reportArgumentQueryController.GetAsync().ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeEquivalentTo(reportArgumentQuery);
-            serviceMock.Verify(s => s.GetReportArgumentQueries(), Times.Once);
+            var content = viewResult.Which.Value as ListResult<ReportArgumentQuery>;
+            content.Results.Should().BeEquivalentTo(reportArgumentQuery);
+            serviceMock.Verify(s => s.GetReportArgumentQueriesAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task GetReportShouldReturnReport() {
+        public async Task GetReportShouldReturnReportAsync() {
             //arrange
             var request = new Mock<HttpRequest>();
             var context = new Mock<HttpContext>();
@@ -143,21 +146,21 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
             request.SetupGet(x => x.Query).Returns(collection);
             context.SetupGet(x => x.Request).Returns(request.Object);
-            serviceMock.Setup(s => s.ExecuteReport(reportRequest.Name, collection, It.IsAny<List<string>>())).Returns(Task.FromResult(report));
+            serviceMock.Setup(s => s.ExecuteReportAsync(reportRequest.Name, collection, It.IsAny<List<string>>())).Returns(Task.FromResult(report));
 
             reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
 
             //act
-            var result = await reportController.Get(reportRequest.Name);
+            var result = await reportController.GetAsync(reportRequest.Name).ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
             viewResult.Which.Value.Should().BeEquivalentTo(report);
-            serviceMock.Verify(s => s.ExecuteReport(reportRequest.Name, collection, It.IsAny<List<string>>()), Times.Once);
+            serviceMock.Verify(s => s.ExecuteReportAsync(reportRequest.Name, collection, It.IsAny<List<string>>()), Times.Once);
         }
 
         [Fact]
-        public async Task GetReportsShouldReturnObject() {
+        public async Task GetReportsShouldReturnObjectAsync() {
             //arrange
             var report = new List<Report>() {
                 new Report() {
@@ -165,37 +168,38 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
                     Description = "someDescription"
                 }
             };
-            serviceMock.Setup(s => s.GetReports()).Returns(report);
+            serviceMock.Setup(s => s.GetReportsAsync()).ReturnsAsync(report);
 
             //act
-            var result = await reportController.Get();
+            var result = await reportController.GetAsync().ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeEquivalentTo(report);
-            serviceMock.Verify(s => s.GetReports(), Times.Once);
+            var content = viewResult.Which.Value as ListResult<Report>;
+            content.Results.Should().BeEquivalentTo(report);
+            serviceMock.Verify(s => s.GetReportsAsync(), Times.Once);
         }
 
         [Fact]
-        public void GetReportGroupShouldReturnObject() {
+        public async Task GetReportGroupShouldReturnObjectAsync() {
             //arrange
             var reportGroup = new ReportGroup() {
                 Name = "someGroup",
                 ReportGroupId = 1
             };
-            serviceMock.Setup(s => s.GetReportGroup(It.IsAny<int>())).Returns(reportGroup);
+            serviceMock.Setup(s => s.GetReportGroupAsync(It.IsAny<int>())).ReturnsAsync(reportGroup);
 
             //act
-            var result = reportGroupController.Get(1);
+            var result = await reportGroupController.GetAsync(1).ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
             viewResult.Which.Value.Should().BeEquivalentTo(reportGroup);
-            serviceMock.Verify(s => s.GetReportGroup(It.IsAny<int>()), Times.Once);
+            serviceMock.Verify(s => s.GetReportGroupAsync(It.IsAny<int>()), Times.Once);
         }
 
         [Fact]
-        public void GetReportGroupsShouldReturnObject() {
+        public async Task GetReportGroupsShouldReturnObjectAsync() {
             //arrange
             var reportGroup = new List<ReportGroup>() {
                 new ReportGroup() {
@@ -203,20 +207,21 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
                     ReportGroupId = 1
                 }
             };
-            serviceMock.Setup(s => s.GetReportGroups()).Returns(reportGroup);
+            serviceMock.Setup(s => s.GetReportGroupsAsync()).ReturnsAsync(reportGroup);
 
             //act
-            var result = reportGroupController.Get();
+            var result = await reportGroupController.GetAsync().ConfigureAwait(false);
 
             //assert
-            var viewResult = result.Should().BeAssignableTo<ObjectResult>();
-            viewResult.Which.Value.Should().BeEquivalentTo(reportGroup);
-            serviceMock.Verify(s => s.GetReportGroups(), Times.Once);
+            var viewResult = result.Should().BeAssignableTo<OkObjectResult>();
+            var content = viewResult.Which.Value as ListResult<ReportGroup>;
+            content.Results.Should().BeEquivalentTo(reportGroup);
+            serviceMock.Verify(s => s.GetReportGroupsAsync(), Times.Once);
         }
 
 
         [Fact]
-        public async void ExportReportShouldReturnObject() {
+        public async Task ExportReportShouldReturnObjectAsync() {
             //arrange
             var request = new Mock<HttpRequest>();
             var context = new Mock<HttpContext>();
@@ -229,6 +234,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
 
             var report = new ReportResult("my report") {
+                ResultSets = { new ResultSet {
                 Columns = new List<ReportColumn> {
                     new ReportColumn {
                         Name = "column1"
@@ -246,6 +252,8 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
                         "row2column2"
                     },
                 }
+                }
+                }
             };
 
             using MemoryStream stream = new MemoryStream();
@@ -255,11 +263,11 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             writer.WriteLine("row2column1", "row2column2");
 
             reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
-            serviceMock.Setup(s => s.ExecuteReport(It.IsAny<string>(), It.IsAny<QueryCollection>(), It.IsAny<List<string>>())).Returns(Task.FromResult(report));
+            serviceMock.Setup(s => s.ExecuteReportAsync(It.IsAny<string>(), It.IsAny<QueryCollection>(), It.IsAny<List<string>>())).Returns(Task.FromResult(report));
             serviceMock.Setup(s => s.ExportReport(It.IsAny<ReportResult>())).Returns(stream);
 
             //act
-            var result = await reportController.Export("report");
+            var result = await reportController.ExportAsync("report").ConfigureAwait(false);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<FileStreamResult>();

@@ -1,20 +1,18 @@
 using System;
-using System.Threading.Tasks;
 using Cortside.Health.Models;
 using Cortside.SqlReportApi.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 namespace Cortside.SqlReportApi.WebApi.Controllers {
-
     /// <summary>
     /// Settings
     /// </summary>
     [ApiVersionNeutral]
     [Route("api/settings")]
     [ApiController]
+    [Produces("application/json")]
     public class SettingsController : ControllerBase {
-
         /// <summary>
         /// Config
         /// </summary>
@@ -31,19 +29,17 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// Service settings that a consumer may need to be aware of
         /// </summary>
         /// <returns></returns>
-        [HttpGet()]
+        [HttpGet("")]
         [ProducesResponseType(typeof(SettingsModel), 200)]
-        public async Task<IActionResult> Get() {
-            var result = await Task.Run(() => GetSettingsModel());
+        [ResponseCache(CacheProfileName = "Default")]
+        public IActionResult Get() {
+            var result = GetSettingsModel();
             return Ok(result);
         }
 
         private SettingsModel GetSettingsModel() {
-
             var ServiceBus = Configuration.GetSection("ServiceBus");
-            var hotDocsSection = Configuration.GetSection("HotDocs");
-            var authConfig = Configuration.GetSection("CortsideIdentityApi");
-            var nautilusSftpSection = Configuration.GetSection("NautilusSftp");
+            var authConfig = Configuration.GetSection("IdentityServer");
             var policyServer = Configuration.GetSection("PolicyServer");
             var build = Configuration.GetSection("Build");
 
@@ -55,8 +51,6 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
                     Suffix = build.GetValue<string>("suffix")
                 },
                 Configuration = new ConfigurationModel() {
-                    HotDocsUrl = hotDocsSection.GetValue<string>("Url"),
-                    NautilusUrl = nautilusSftpSection.GetValue<string>("Url"),
                     ServiceBus = new ServicebusModel {
                         Exchange = ServiceBus.GetValue<string>("Exchange"),
                         NameSpace = ServiceBus.GetValue<string>("Namespace"),

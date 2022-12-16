@@ -1,10 +1,8 @@
 namespace Cortside.SqlReportApi.WebApi.Models.Responses {
-
     /// <summary>
     /// Service bus model
     /// </summary>
     public class ServicebusModel {
-
         /// <summary>
         /// Name Space
         /// </summary>

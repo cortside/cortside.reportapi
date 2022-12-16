@@ -1,7 +1,6 @@
 using Cortside.Health.Models;
 
 namespace Cortside.SqlReportApi.WebApi.Models.Responses {
-
     /// <summary>
     /// Settings
     /// </summary>

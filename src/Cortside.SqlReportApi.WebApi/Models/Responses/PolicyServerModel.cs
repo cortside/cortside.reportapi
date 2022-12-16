@@ -1,10 +1,8 @@
 namespace Cortside.SqlReportApi.WebApi.Models.Responses {
-
     /// <summary>
     /// Policy Server Model
     /// </summary>
     public class PolicyServerModel {
-
         /// <summary>
         /// Base Policys
         /// </summary>
