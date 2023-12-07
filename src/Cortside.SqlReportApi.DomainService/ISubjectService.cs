@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Cortside.SqlReportApi.Dto.Dto;
+using Cortside.SqlReportApi.Dto;
 
 namespace Cortside.SqlReportApi.DomainService {
     public interface ISubjectService {

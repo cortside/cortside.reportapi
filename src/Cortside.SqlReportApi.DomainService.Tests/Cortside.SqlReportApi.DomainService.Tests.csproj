@@ -26,6 +26,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cortside.SqlReportApi.Data\Cortside.SqlReportApi.Data.csproj" />
-    <ProjectReference Include="..\Cortside.SqlReportApi.DomainService\Cortside.SqlReportApi.DomainService.csproj" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 using System;
 
-namespace Cortside.SqlReportApi.Dto.Dto {
+namespace Cortside.SqlReportApi.Dto {
     public class SubjectDto {
         public Guid SubjectId { get; set; }
 

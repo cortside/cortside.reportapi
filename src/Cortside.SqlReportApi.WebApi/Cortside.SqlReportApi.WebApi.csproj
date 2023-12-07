@@ -9,19 +9,7 @@
     <PackageReference Include="Cortside.AspNetCore" Version="6.1.190" />
     <PackageReference Include="Cortside.AspNetCore.AccessControl" Version="6.1.190" />
     <PackageReference Include="Cortside.AspNetCore.ApplicationInsights" Version="6.1.190" />
-    <PackageReference Include="Cortside.AspNetCore.Common" Version="6.1.190" />
     <PackageReference Include="Cortside.AspNetCore.Swagger" Version="6.1.190" />
-    <PackageReference Include="Cortside.Common.BootStrap" Version="6.1.397" />
-    <PackageReference Include="Cortside.Common.Correlation" Version="6.1.397" />
-    <PackageReference Include="Cortside.Common.Hosting" Version="6.1.397" />
-    <PackageReference Include="Cortside.Common.Json" Version="6.1.397" />
-    <PackageReference Include="Cortside.Health" Version="6.0.86" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SlowCheetah" Version="4.0.50">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -30,10 +18,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
-    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="110.2.0" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
     <PackageReference Include="Serilog.Bowdlerizer" Version="6.0.73" />
@@ -47,15 +31,12 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="6.0.0" />
-    <PackageReference Include="System.ComponentModel" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cortside.SqlReportApi.BootStrap\Cortside.SqlReportApi.BootStrap.csproj" />
-    <ProjectReference Include="..\Cortside.SqlReportApi.Facade\Cortside.SqlReportApi.Facade.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.local.json">

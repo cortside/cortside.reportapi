@@ -1,4 +1,4 @@
-namespace Cortside.SqlReportApi.Dto.Dto {
+namespace Cortside.SqlReportApi.Dto {
     public class ServiceConfiguration {
         public string OutputPath { get; set; }
     }

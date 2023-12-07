@@ -21,7 +21,4 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Cortside.SqlReportApi.Facade\Cortside.SqlReportApi.Facade.csproj" />
-  </ItemGroup>
 </Project>
