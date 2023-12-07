@@ -27,11 +27,11 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// Authorization controller
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="client"></param>
+        /// <param name="policyClient"></param>
         /// <param name="configuration"></param>
-        public AuthorizationController(ILogger<AuthorizationController> logger, IPolicyServerRuntimeClient client, IConfiguration configuration) {
+        public AuthorizationController(ILogger<AuthorizationController> logger, IPolicyServerRuntimeClient policyClient, IConfiguration configuration) {
             this.logger = logger;
-            this.policyClient = client;
+            this.policyClient = policyClient;
             this.configuration = configuration;
         }
 

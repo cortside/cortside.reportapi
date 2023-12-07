@@ -1,20 +1,22 @@
-using System.Collections.Generic;
-using System.Reflection;
 using Cortside.AspNetCore;
 using Cortside.AspNetCore.AccessControl;
 using Cortside.AspNetCore.ApplicationInsights;
 using Cortside.AspNetCore.Auditable;
 using Cortside.AspNetCore.Auditable.Entities;
 using Cortside.AspNetCore.Builder;
+using Cortside.AspNetCore.EntityFramework;
 using Cortside.AspNetCore.Swagger;
+using Cortside.Common.Messages.Filters;
+using Cortside.Health;
 using Cortside.SqlReportApi.BootStrap;
-using Cortside.SqlReportApi.WebApi.Installers;
+using Cortside.SqlReportApi.Data;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace Cortside.SqlReportApi.WebApi {
     /// <summary>
@@ -25,13 +27,11 @@ namespace Cortside.SqlReportApi.WebApi {
         /// Startup
         /// </summary>
         /// <param name="configuration"></param>
+        [ActivatorUtilitiesConstructor]
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
-        /// <summary>
-        /// Startup
-        /// </summary>
         public Startup() {
         }
 
@@ -40,18 +40,34 @@ namespace Cortside.SqlReportApi.WebApi {
         /// </summary>
         private IConfiguration Configuration { get; set; }
 
+        public void UseConfiguration(IConfiguration config) {
+            Configuration = config;
+        }
         /// <summary>
         /// Configure Services
         /// </summary>
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services) {
+            // setup global default json serializer settings
+            JsonConvert.DefaultSettings = JsonNetUtility.GlobalDefaultSettings;
+
+            // add ApplicationInsights telemetry
             var serviceName = Configuration["Service:Name"];
-            var instrumentationKey = Configuration["ApplicationInsights:InstrumentationKey"];
-            services.AddApplicationInsights(serviceName, instrumentationKey);
+            var config = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsServiceOptions>();
+            services.AddApplicationInsights(serviceName, config);
+
+            // add database context with interfaces
+            services.AddDatabaseContext<IDatabaseContext, DatabaseContext>(Configuration);
+
+            // add health services
+            services.AddHealth(o => {
+                o.UseConfiguration(Configuration);
+            });
 
             // add controllers and all of the api defaults
-            services.AddApiDefaults()
-                .AddControllersAsServices();
+            services.AddApiDefaults(InternalDateTimeHandling.Utc, options => {
+                options.Filters.Add<MessageExceptionResponseFilter>();
+            });
 
             // add SubjectPrincipal for auditing
             services.AddSubjectPrincipal();
@@ -61,19 +77,13 @@ namespace Cortside.SqlReportApi.WebApi {
             services.AddAccessControl(Configuration);
 
             // Add swagger with versioning and OpenID Connect configuration using Newtonsoft
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var versions = new List<OpenApiInfo> {
-                new OpenApiInfo {
-                    Version = "v1",
-                    Title = "Cortside.SqlReport API",
-                    Description = "Cortside.SqlReport API",
-                }
-            };
-            services.AddSwagger(Configuration, xmlFile, versions);
+            services.AddSwagger(Configuration, "Cortside.SqlReport API", "Cortside.SqlReport API", new[] { "v1", "v2" });
+
+            // add service for handling encryption of search parameters
+            services.AddEncryptionService(Configuration["Encryption:Secret"]);
 
             // setup and register boostrapper and it's installers
             services.AddBootStrapper<DefaultApplicationBootStrapper>(Configuration, o => {
-                o.AddInstaller(new NewtonsoftInstaller());
                 //o.AddInstaller(new ModelMapperInstaller());
             });
         }
@@ -87,7 +97,7 @@ namespace Cortside.SqlReportApi.WebApi {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider) {
             app.UseMiniProfiler();
             app.UseApiDefaults(Configuration);
-            app.UseSwagger("Cortside.SqlReportApi Api", provider);
+            app.UseSwagger("Acme.ShoppingCart Api", provider);
 
             // order of the following matters
             app.UseAuthentication();
@@ -95,10 +105,6 @@ namespace Cortside.SqlReportApi.WebApi {
             app.UseRouting();
             app.UseAuthorization(); // intentionally set after UseRouting
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-        }
-
-        public void UseConfiguration(IConfiguration config) {
-            Configuration = config;
         }
     }
 }

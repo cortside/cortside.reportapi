@@ -8,16 +8,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Cortside.Common.BootStrap" Version="1.1.296" />
-    <PackageReference Include="Cortside.Common.Cryptography" Version="1.1.296" />
-    <PackageReference Include="Cortside.Health" Version="1.0.51" />
-    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.3.44">
+    <PackageReference Include="Cortside.Common.BootStrap" Version="6.1.397" />
+    <PackageReference Include="Cortside.Common.Cryptography" Version="6.1.397" />
+    <PackageReference Include="Cortside.Health" Version="6.0.86" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.8.14">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
-    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.2.22" />
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8" />
+    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.3.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cortside.SqlReportApi.Data\Cortside.SqlReportApi.Data.csproj" />

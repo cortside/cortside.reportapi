@@ -2,9 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Cortside.Health.Controllers;
 using Cortside.SqlReportApi.WebApi.Controllers;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -24,7 +29,10 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
             controllersAssembly = typeof(AuthorizationController).Assembly;
             controllers.AddRange(controllersAssembly.ExportedTypes.Where(x => typeof(ControllerBase).IsAssignableFrom(x) && !x.IsAbstract));
 
+            var activator = fixture.Services.GetService<IControllerActivator>();
+            var serviceProvider = fixture.Services.GetService<IServiceProvider>();
             var errors = new Dictionary<Type, Exception>();
+
             var count = 0;
             var min = long.MaxValue;
             var max = long.MinValue;
@@ -35,7 +43,16 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
                 try {
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
-                    var controller = fixture.Services.GetRequiredService(controllerType);
+                    var actionContext = new ActionContext(
+                        new DefaultHttpContext {
+                            RequestServices = serviceProvider
+                        },
+                        new RouteData(),
+                        new ControllerActionDescriptor {
+                            ControllerTypeInfo = controllerType.GetTypeInfo()
+                        });
+                    var controller = activator.Create(new ControllerContext(actionContext));
+
                     stopwatch.Stop();
 
                     if (stopwatch.ElapsedMilliseconds > max) {
@@ -51,9 +68,9 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
                     if (stopwatch.ElapsedMilliseconds > 100) {
                         Console.Out.WriteLine($"Resolved controller {controller.GetType()} in {stopwatch.ElapsedMilliseconds}ms");
                     }
-                } catch (Exception e) {
-                    Console.Out.WriteLine($"Failed to resolve controller {controllerType} due to {e}");
-                    errors.Add(controllerType, e);
+                } catch (Exception ex) {
+                    Console.Out.WriteLine($"Failed to resolve controller {controllerType} due to {ex}");
+                    errors.Add(controllerType, ex);
                 }
             }
 

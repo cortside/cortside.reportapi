@@ -256,3 +256,5 @@ coverage.opencover.xml
 
 # don't set trigger on outbox table
 src/sql/trigger/trOutbox.trigger.sql
+
+.NCrunch_*

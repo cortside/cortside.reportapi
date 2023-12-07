@@ -11,8 +11,10 @@ using Xunit;
 namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
     public class HealthTest : IClassFixture<IntegrationTestFactory<Startup>> {
         private readonly HttpClient testServerClient;
+        private readonly IntegrationTestFactory<Startup> fixture;
 
         public HealthTest(IntegrationTestFactory<Startup> fixture) {
+            this.fixture = fixture;
             testServerClient = fixture.CreateClient(new WebApplicationFactoryClientOptions {
                 AllowAutoRedirect = false
             });
@@ -36,7 +38,7 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
             //assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var respObj = JsonConvert.DeserializeObject<HealthModel>(content);
+            var respObj = JsonConvert.DeserializeObject<HealthModel>(content, fixture.SerializerSettings);
             Assert.True(respObj.Healthy, content);
         }
     }
