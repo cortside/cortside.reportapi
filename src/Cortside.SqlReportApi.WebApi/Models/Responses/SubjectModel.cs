@@ -2,12 +2,10 @@ using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cortside.SqlReportApi.WebApi.Models.Responses {
-
     /// <summary>
     /// Subject
     /// </summary>
     public class SubjectModel {
-
         /// <summary>
         /// SubjectId
         /// </summary>

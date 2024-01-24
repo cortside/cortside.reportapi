@@ -1,0 +1,39 @@
+{
+  "version": "1.1",
+  "service": "sqlreport-api",
+  "repository": {
+    "name": "Cortside.SqlReportApi"
+  },
+  "database": {
+    "name": "SqlReport",
+    "dbContext": "DatabaseContext",
+    "dbContextProject": "src/Cortside.SqlReportApi.Data",
+    "startupProject": "src/Cortside.SqlReportApi.WebApi",
+    "triggers": {
+      "excludeTables": [
+        "__EFMigrationsHistory",
+        "AuditLog",
+        "AuditLogTransaction",
+        "Outbox"
+      ]
+    }
+  },
+  "docker": {
+    "buildImage": "cortside/dotnet-sdk:8.0-alpine",
+    "runtimeImage": "cortside/dotnet-runtime:8.0-alpine",
+    "image": "cortside/sqlreport-api",
+    "executable": "Cortside.SqlReportApi.WebApi"
+  },
+  "build": {
+    "configuration": "Debug",
+    "publishableProject": "Cortside.SqlReportApi.WebApi",
+    "nugetfeed": "https://api.nuget.org/v3/index.json"
+  },
+  "sonar": {
+    "organization": "cortside",
+    "key": "cortside_cortside.sqlreportapi",
+    "host": "https://sonarcloud.io",
+    "token": "",
+    "propertyPrefix": "/d:"
+  }
+}

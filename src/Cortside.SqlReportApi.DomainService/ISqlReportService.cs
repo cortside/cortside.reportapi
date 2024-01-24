@@ -1,32 +1,29 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Cortside.SqlReportApi.Data;
-using Cortside.SqlReportApi.Domain;
+using Cortside.SqlReportApi.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace Cortside.SqlReportApi.DomainService {
-
     public interface ISqlReportService {
+        Task<Report> GetReportAsync(string name);
 
-        Report GetReport(string name);
+        Task<IList<Report>> GetReportsAsync();
 
-        IEnumerable<Report> GetReports();
+        Task<IList<ReportGroup>> GetReportGroupsAsync();
 
-        IEnumerable<ReportGroup> GetReportGroups();
+        Task<ReportGroup> GetReportGroupAsync(int id);
 
-        ReportGroup GetReportGroup(int id);
+        Task<IList<ReportArgument>> GetReportArgumentsAsync();
 
-        IEnumerable<ReportArgument> GetReportArguments();
+        Task<ReportArgument> GetReportArgumentAsync(int id);
 
-        ReportArgument GetReportArgument(int id);
+        Task<IList<ReportArgumentQuery>> GetReportArgumentQueriesAsync();
 
-        IEnumerable<ReportArgumentQuery> GetReportArgumentQueries();
+        Task<ReportArgumentQuery> GetReportArgumentQueryAsync(int id);
 
-        ReportArgumentQuery GetReportArgumentQuery(int id);
-
-        Task<ReportResult> ExecuteReport(string name, IQueryCollection query, List<string> permissions);
+        Task<ReportResult> ExecuteReportAsync(string name, IQueryCollection args, List<string> permissions);
 
         Stream ExportReport(ReportResult report);
     }

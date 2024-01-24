@@ -1,85 +1,28 @@
-image: Visual Studio 2022
-version: 1.0.{build}
+## https://www.appveyor.com/docs/appveyor-yml/
+image: Ubuntu2004
+version: 1.1.{build}
 
-configuration:
-- Debug
+platform: Any CPU
 
-#platform: Any CPU
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
 
 environment:
   # Don't report back to the mothership
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOCKER_USER: corts
+  DOCKER_PASS:
+    secure: 0rxw6OrmXRqB3UuBZFbC/w==
+  SONAR_TOKEN:
+    secure: fNmV/P8zSNwd3LWpzw2nnm807oe1Hr0gr11hTItGCXmnVQ0tHN1ESPUjLYjsXmpG
 
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
-
-assembly_info:
-  patch: true
-  file: '**\Assembly*Info.*'
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
-  
-dotnet_csproj: 
-  patch: true 
-  file: '**\*.csproj' 
-  version: '{version}' 
-  assembly_version: '{version}' 
-  file_version: '{version}'  
-
-before_build:
-  - appveyor-retry dotnet restore src/Cortside.SqlReportApi.sln -v Minimal
-  - set DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%
-
-build:
-  publish_nuget: true
-  publish_nuget_symbols: true
-  include_nuget_references: true
-  verbosity: minimal
+- ps: $env:DOCKER_PASS | docker login --username $env:DOCKER_USER --password-stdin
+- docker version
 
 build_script:
-- ps: ./build.ps1
-
-after_build:
 - ps: >-
-    dotnet publish -r win-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/win-x64 .\src\Cortside.SqlReportApi.WebApi;
-    dotnet publish -r linux-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/linux-x64 .\src\Cortside.SqlReportApi.WebApi;
-    dotnet publish -r linux-musl-x64 -c Debug /p:PublishSingleFile=true /p:PublishTrimmed=true --output publish/linux-musl-x64 .\src\Cortside.SqlReportApi.WebApi;
-    #docker build -t cortside/sqlreport-api:1.0 .;
-    #- docker push cortside/healthmonitor:1.0;       
-- cmd: 7z a sqlreport-api.zip -r src/sql/* %APPVEYOR_BUILD_FOLDER%\publish\*
-- cmd: appveyor PushArtifact sqlreport-api.zip
-
-cache:
-  - '%USERPROFILE%\.nuget\packages'
-  
-nuget:
-  disable_publish_on_pr: true
-  
-test:
-  assemblies:
-#    - '**\Cortside.SqlReportApi.Test.dll'
-
-artifacts:
-- path: sqlreport-api.zip
-  name: deploy
-deploy:
-- provider: GitHub
-  description: '$(appveyor_build_version)'
-  auth_token:
-    secure: PfMxiwJ07WiudGV8OdaK1gBnW4kpkcv6mTaCoFj2pdhNPy7QLC5jfSkB4OWwNo35
-  artifact: deploy
-  draft: false
-  prerelease: false
-  on:
-    branch: master                 # release from master branch only
-- provider: GitHub
-  description: '$(appveyor_build_version)-develop'
-  auth_token:
-    secure: PfMxiwJ07WiudGV8OdaK1gBnW4kpkcv6mTaCoFj2pdhNPy7QLC5jfSkB4OWwNo35
-  artifact: deploy
-  draft: false
-  prerelease: true
-  on:
-    branch: develop                 
-
+    $buildNumber = $env:APPVEYOR_BUILD_NUMBER;
+    $branch = $env:APPVEYOR_REPO_BRANCH;
+    .\build-dockerimages.ps1 -branch $branch -buildCounter $buildNumber -pushImage;

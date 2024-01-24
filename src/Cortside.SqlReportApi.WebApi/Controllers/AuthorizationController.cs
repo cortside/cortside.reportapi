@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Cortside.Common.Security;
 using Cortside.SqlReportApi.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
     /// <summary>
     /// provides resources from the policy server
     /// </summary>
-    [Route("api/v1/authorization")]
+    [Route("api/v{version:apiVersion}/authorization")]
     [ApiController]
     [ApiVersion("1")]
     [Produces("application/json")]
@@ -26,11 +27,11 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// Authorization controller
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="client"></param>
+        /// <param name="policyClient"></param>
         /// <param name="configuration"></param>
-        public AuthorizationController(ILogger<AuthorizationController> logger, IPolicyServerRuntimeClient client, IConfiguration configuration) {
+        public AuthorizationController(ILogger<AuthorizationController> logger, IPolicyServerRuntimeClient policyClient, IConfiguration configuration) {
             this.logger = logger;
-            policyClient = client;
+            this.policyClient = policyClient;
             this.configuration = configuration;
         }
 
@@ -40,14 +41,15 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <returns>The list of permissions</returns>
         [HttpGet("")]
         [ProducesResponseType(typeof(AuthorizationModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPermissions() {
+        public async Task<IActionResult> GetPermissionsAsync() {
             logger.LogInformation("Retrieving authorization permissions for user.");
-            var authProperties = await policyClient.EvaluateAsync(User);
+            var authProperties = await policyClient.EvaluateAsync(User).ConfigureAwait(false);
             AuthorizationModel responseModel = new AuthorizationModel() {
                 Permissions = authProperties.Permissions.ToList()
             };
             var permissionsPrefix = configuration.GetSection("PolicyServer").GetValue<string>("BasePolicyPrefix");
-            responseModel.Permissions = responseModel.Permissions.Select(p => $"{permissionsPrefix}.{p}").ToList();
+            responseModel.Permissions = responseModel.Permissions.ConvertAll(p => $"{permissionsPrefix}.{p}");
+            responseModel.Principal = SubjectPrincipal.From(ControllerContext.HttpContext.User);
             return Ok(responseModel);
         }
     }

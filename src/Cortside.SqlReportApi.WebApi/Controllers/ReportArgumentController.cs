@@ -1,22 +1,27 @@
-using Cortside.SqlReportApi.Data;
+using System.Threading.Tasks;
+using Cortside.AspNetCore.Common.Models;
+using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.DomainService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PolicyServer.Runtime.Client;
 
 namespace Cortside.SqlReportApi.WebApi.Controllers {
-
     /// <summary>
     /// Access functionality for report arguments
     /// </summary>
-    [Route(BaseRoute + "arguments")]
-    public class ReportArgumentController : BaseController {
+    [Route("api/v{version:apiVersion}/arguments")]
+    [ApiVersion("1")]
+    [Produces("application/json")]
+    [ApiController]
+    public class ReportArgumentController : Controller {
+        private readonly ISqlReportService svc;
 
         /// <summary>
         /// Initialize the controller
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="svc"></param>
-        public ReportArgumentController(DatabaseContext db, ISqlReportService svc, IPolicyServerRuntimeClient policyClient) : base(db, svc, policyClient) {
+        public ReportArgumentController(ISqlReportService svc) {
+            this.svc = svc;
         }
 
         /// <summary>
@@ -24,13 +29,14 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
-        public IActionResult Get() {
-            var result = svc.GetReportArguments();
+        [ProducesResponseType(typeof(ListResult<ReportArgument>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAsync() {
+            var result = await svc.GetReportArgumentsAsync().ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }
-            return new ObjectResult(result);
+            var results = new ListResult<ReportArgument>(result);
+            return new ObjectResult(results);
         }
 
         /// <summary>
@@ -39,9 +45,9 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        //[Authorize(Constants.Authorization.Permissions.CanGetReports)]
-        public IActionResult Get(int id) {
-            var result = svc.GetReportArgument(id);
+        [ProducesResponseType(typeof(ReportArgument), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAsync(int id) {
+            var result = await svc.GetReportArgumentAsync(id).ConfigureAwait(false);
             if (result == null) {
                 return NotFound();
             }

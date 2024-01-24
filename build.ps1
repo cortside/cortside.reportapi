@@ -136,7 +136,7 @@ Param(
 }
 
 # generate build.json
-$BuildNumber = (New-BuildJson -versionJsonPath $PSScriptRoot\src\version.json -BuildJsonPath $PSScriptRoot\src\build.json -buildCounter $buildCounter).build.version
+$BuildNumber = (New-BuildJson -versionJsonPath $PSScriptRoot\repository.json -BuildJsonPath $PSScriptRoot\src\build.json -buildCounter $buildCounter).build.version
 Write-Host "##teamcity[buildNumber '$BuildNumber']"
 $build = Set-DockerTag -branch $branch -buildNumber $BuildNumber -BuildJsonPath $PSScriptRoot\src\build.json
 $dockertag = $build.build.tag
@@ -172,14 +172,14 @@ if ($suffix){
 }
 
 # copy generated build.json to needed applications
-cp .\src\build.json .\src\Cortside.SqlReportApi.WebApi\build.json -force
+#cp .\src\build.json .\src\Cortside.SqlReportApi.WebApi\build.json -force
 
 # build
-$args = "clean $PSScriptRoot\src\Cortside.SqlReportApi.sln"
+$args = "clean $PSScriptRoot\src"
 Invoke-Exe -cmd dotnet -args $args
-$args = "restore $PSScriptRoot\src\Cortside.SqlReportApi.sln --packages $PSScriptRoot\src\packages"
+$args = "restore $PSScriptRoot\src --packages $PSScriptRoot\src\packages"
 Invoke-Exe -cmd dotnet -args $args
-$args = "build $PSScriptRoot\src\Cortside.SqlReportApi.sln --no-restore --configuration $msbuildconfig /p:Version=$BuildNumber"
+$args = "build $PSScriptRoot\src --no-restore --configuration $msbuildconfig /p:Version=$BuildNumber"
 Invoke-Exe -cmd dotnet -args $args
-$args = "publish $PSScriptRoot\src\Cortside.SqlReportApi.WebApi\Cortside.SqlReportApi.WebApi.csproj --no-restore /p:Version=$BuildNumber"
-Invoke-Exe -cmd dotnet -args $args
+#$args = "publish $PSScriptRoot\src\Cortside.SqlReportApi.WebApi\Cortside.SqlReportApi.WebApi.csproj --no-restore /p:Version=$BuildNumber"
+#Invoke-Exe -cmd dotnet -args $args

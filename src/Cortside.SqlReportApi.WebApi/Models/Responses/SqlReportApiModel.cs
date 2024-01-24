@@ -1,7 +1,6 @@
 using System;
 
 namespace Cortside.SqlReportApi.WebApi.Models.Responses {
-
     /// <summary>
     /// Represents a single loan
     /// </summary>
@@ -50,7 +49,6 @@ namespace Cortside.SqlReportApi.WebApi.Models.Responses {
         /// SqlReportApi file size
         /// </summary>
         public long Size { get; set; }
-
 
         /// <summary>
         /// SqlReportApi set id for application
