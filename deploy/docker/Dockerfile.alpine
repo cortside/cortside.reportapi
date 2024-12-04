@@ -25,7 +25,7 @@ ARG organization
 ARG publishableProject
 
 # set to use teamcity messaging for test logger
-#ENV TEAMCITY_VERSION="1.1" 
+#ENV TEAMCITY_VERSION="1.1"
 
 RUN export SONAR_SCANNER_OPTS="-Xmx4096m" && \
     echo "analysisArgs=$analysisArgs" && \
@@ -68,8 +68,8 @@ RUN chmod -R a+rw /sql
 WORKDIR /app
 COPY --from=build /app/src/out ./
 COPY --from=build /app/src/"$publishableProject"/build.json ./
-RUN chown user:user appsettings.json
+RUN chown appuser:appuser appsettings.json
 
-USER user
+USER appuser
 EXPOSE 5000/tcp
 CMD ["/startup.sh"]
