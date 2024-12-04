@@ -20,7 +20,7 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
             //arrange
 
             //act
-            var response = await testServerClient.GetAsync("api/settings").ConfigureAwait(false);
+            var response = await testServerClient.GetAsync("api/settings");
 
             //assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);

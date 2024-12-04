@@ -58,7 +58,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentAsync(It.IsAny<int>())).ReturnsAsync(reportArgument);
 
             //act
-            var result = await reportArgumentController.GetAsync(1).ConfigureAwait(false);
+            var result = await reportArgumentController.GetAsync(1);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -79,7 +79,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentsAsync()).ReturnsAsync(reportArgument);
 
             //act
-            var result = await reportArgumentController.GetAsync().ConfigureAwait(false);
+            var result = await reportArgumentController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -98,7 +98,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentQueryAsync(It.IsAny<int>())).ReturnsAsync(reportArgumentQuery);
 
             //act
-            var result = await reportArgumentQueryController.GetAsync(1).ConfigureAwait(false);
+            var result = await reportArgumentQueryController.GetAsync(1);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -118,7 +118,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentQueriesAsync()).ReturnsAsync(reportArgumentQuery);
 
             //act
-            var result = await reportArgumentQueryController.GetAsync().ConfigureAwait(false);
+            var result = await reportArgumentQueryController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -151,7 +151,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
 
             //act
-            var result = await reportController.GetAsync(reportRequest.Name).ConfigureAwait(false);
+            var result = await reportController.GetAsync(reportRequest.Name);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -171,7 +171,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportsAsync()).ReturnsAsync(report);
 
             //act
-            var result = await reportController.GetAsync().ConfigureAwait(false);
+            var result = await reportController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -190,7 +190,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportGroupAsync(It.IsAny<int>())).ReturnsAsync(reportGroup);
 
             //act
-            var result = await reportGroupController.GetAsync(1).ConfigureAwait(false);
+            var result = await reportGroupController.GetAsync(1);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -210,7 +210,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportGroupsAsync()).ReturnsAsync(reportGroup);
 
             //act
-            var result = await reportGroupController.GetAsync().ConfigureAwait(false);
+            var result = await reportGroupController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<OkObjectResult>();
@@ -267,7 +267,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.ExportReport(It.IsAny<ReportResult>())).Returns(stream);
 
             //act
-            var result = await reportController.ExportAsync("report").ConfigureAwait(false);
+            var result = await reportController.ExportAsync("report");
 
             //assert
             var viewResult = result.Should().BeAssignableTo<FileStreamResult>();

@@ -18,8 +18,8 @@
 //        }
 
 //        public async Task<CustomerDto> CreateCustomerAsync(CustomerDto dto) {
-//            var customer = await customerService.CreateCustomerAsync(dto).ConfigureAwait(false);
-//            await uow.SaveChangesAsync().ConfigureAwait(false);
+//            var customer = await customerService.CreateCustomerAsync(dto);
+//            await uow.SaveChangesAsync();
 
 //            return mapper.MapToDto(customer);
 //        }
@@ -34,15 +34,15 @@
 //        }
 
 //        public async Task PublishCustomerStateChangedEventAsync(Guid resourceId) {
-//            await customerService.PublishCustomerStateChangedEventAsync(resourceId).ConfigureAwait(false);
-//            await uow.SaveChangesAsync().ConfigureAwait(false);
+//            await customerService.PublishCustomerStateChangedEventAsync(resourceId);
+//            await uow.SaveChangesAsync();
 //        }
 
 //        public async Task<PagedList<CustomerDto>> SearchCustomersAsync(int pageSize, int pageNumber, string sortParams, CustomerSearch search) {
 //            // Using BeginReadUncommittedAsync on GET endpoints that return a list, this will read uncommitted and
 //            // as notracking in ef core.  this will result in a non-blocking dirty read, which is accepted best practice for mssql
-//            using (var tx = await uow.BeginReadUncommitedAsync().ConfigureAwait(false)) {
-//                var customers = await customerService.SearchCustomersAsync(pageSize, pageNumber, sortParams, search).ConfigureAwait(false);
+//            using (var tx = await uow.BeginReadUncommitedAsync()) {
+//                var customers = await customerService.SearchCustomersAsync(pageSize, pageNumber, sortParams, search);
 
 //                return new PagedList<CustomerDto> {
 //                    PageNumber = customers.PageNumber,
@@ -54,8 +54,8 @@
 //        }
 
 //        public async Task<CustomerDto> UpdateCustomerAsync(CustomerDto dto) {
-//            var customer = await customerService.UpdateCustomerAsync(dto).ConfigureAwait(false);
-//            await uow.SaveChangesAsync().ConfigureAwait(false);
+//            var customer = await customerService.UpdateCustomerAsync(dto);
+//            await uow.SaveChangesAsync();
 
 //            return mapper.MapToDto(customer);
 //        }
