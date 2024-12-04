@@ -50,7 +50,7 @@ Write-Output @("
 ")
 
 if ($PSScriptRoot.Contains(' ')) { 
-	throw "Your working directory has a space in the path, which is not supported.  Wise up and move to C:\work\Cortside.SqlReportApi! And have a wonderful work day!"
+	throw "Your working directory has a space in the path, which is not supported.  Wise up and move to C:\work\Acme.ShoppingCart! And have a wonderful work day!"
 	exit
 }
 
@@ -133,7 +133,7 @@ if ($config.database.triggers.excludeTables.length -gt 0) {
 }
 
 $triggerTemplate = @"
-DROP TRIGGER IF EXISTS {{triggerName}}
+DROP TRIGGER IF EXISTS {{schema}}.{{triggerName}}
 GO
 
 ---
@@ -148,7 +148,7 @@ CREATE TRIGGER {{triggerName}}
 	SET NOCOUNT ON
 
 	DECLARE 
-		@AuditLogTransactionId	int,
+		@AuditLogTransactionId	bigint,
 		@Inserted	    		int = 0,
  		@ROWS_COUNT				int
 
