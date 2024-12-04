@@ -22,7 +22,7 @@ namespace Cortside.SqlReportApi.DomainService {
         }
 
         public async Task<Report> GetReportAsync(string name) {
-            logger.LogInformation("Retriving report {name}.", name);
+            logger.LogInformation("Retrieving report {Name}.", name);
             var report = await db.Reports
                 .Include(r => r.ReportArguments)
                 .ThenInclude(y => y.ReportArgumentQuery)
@@ -39,7 +39,7 @@ namespace Cortside.SqlReportApi.DomainService {
         }
 
         public async Task<IList<Report>> GetReportsAsync() {
-            logger.LogInformation("Retriving all Reports.");
+            logger.LogInformation("Retrieving all Reports.");
             var reports = await db.Reports
                 .Include(r => r.ReportArguments)
                 .ThenInclude(y => y.ReportArgumentQuery)
@@ -54,12 +54,12 @@ namespace Cortside.SqlReportApi.DomainService {
         }
 
         public async Task<IList<ReportGroup>> GetReportGroupsAsync() {
-            logger.LogInformation("Retriving all ReportGroups.");
+            logger.LogInformation("Retrieving all ReportGroups.");
             return await db.ReportGroups.ToListAsync().ConfigureAwait(false);
         }
 
         public async Task<ReportGroup> GetReportGroupAsync(int id) {
-            logger.LogInformation("Retriving ReportGroup {id}.", id);
+            logger.LogInformation("Retrieving ReportGroup {Id}.", id);
             var reportGroup = await db.ReportGroups.Where(p => p.ReportGroupId.Equals(id)).SingleOrDefaultAsync().ConfigureAwait(false);
             if (reportGroup == null) {
                 throw new ResourceNotFoundMessage($"ReportGroup {id} could not be found.");

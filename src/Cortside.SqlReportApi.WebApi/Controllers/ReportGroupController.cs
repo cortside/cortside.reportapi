@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Cortside.AspNetCore.Common.Models;
 using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.DomainService;

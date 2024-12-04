@@ -4,15 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Cortside.Common.BootStrap" Version="6.2.408" />
-    <PackageReference Include="Cortside.Common.Cryptography" Version="6.2.408" />
-    <PackageReference Include="Cortside.Health" Version="6.0.86" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.8.14">
+    <PackageReference Include="Cortside.Common.BootStrap" Version="6.3.458" />
+    <PackageReference Include="Cortside.Common.Cryptography" Version="6.3.458" />
+    <PackageReference Include="Cortside.Health" Version="6.1.93" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8" />
-    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.3.8" />
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.5.4" />
+    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.5.4" />
+    <PackageReference Include="PolicyServer.Runtime.Client.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cortside.SqlReportApi.DomainService\Cortside.SqlReportApi.DomainService.csproj" />

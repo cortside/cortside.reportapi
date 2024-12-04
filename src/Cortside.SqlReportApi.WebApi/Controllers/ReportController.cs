@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Cortside.AspNetCore.Common.Models;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain.Entities;

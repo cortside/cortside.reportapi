@@ -1,9 +1,11 @@
 $fail = $false
 
 #$env:RESTRICTED_WORDS="comma,separated,list"
-$words =$($env:RESTRICTED_WORDS).Split(",")
-$words |%{
-	& grep -R -i "$_" * |% { $_; $fail = $true }
+if ((Test-Path 'env:RESTRICTED_WORDS')) {
+	$words =$($env:RESTRICTED_WORDS).Split(",")
+	$words |%{
+		& grep -R -i "$_" * |% { $_; $fail = $true }
+	}
 }
 
 $textFiles = git grep -Il .

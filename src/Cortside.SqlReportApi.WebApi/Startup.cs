@@ -1,19 +1,20 @@
+using Asp.Versioning.ApiExplorer;
 using Cortside.AspNetCore;
 using Cortside.AspNetCore.AccessControl;
 using Cortside.AspNetCore.ApplicationInsights;
 using Cortside.AspNetCore.Auditable;
 using Cortside.AspNetCore.Auditable.Entities;
 using Cortside.AspNetCore.Builder;
+using Cortside.AspNetCore.Common;
 using Cortside.AspNetCore.EntityFramework;
+using Cortside.AspNetCore.Filters;
 using Cortside.AspNetCore.Swagger;
-using Cortside.Common.Messages.Filters;
 using Cortside.Health;
 using Cortside.SqlReportApi.BootStrap;
 using Cortside.SqlReportApi.Data;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -64,7 +65,7 @@ namespace Cortside.SqlReportApi.WebApi {
                 o.UseConfiguration(Configuration);
             });
 
-            // add controllers and all of the api defaults
+            // add controllers and all the api defaults
             services.AddApiDefaults(InternalDateTimeHandling.Utc, options => {
                 options.Filters.Add<MessageExceptionResponseFilter>();
             });
@@ -82,9 +83,8 @@ namespace Cortside.SqlReportApi.WebApi {
             // add service for handling encryption of search parameters
             services.AddEncryptionService(Configuration["Encryption:Secret"]);
 
-            // setup and register boostrapper and it's installers
+            // setup and register bootstrapper and it's installers
             services.AddBootStrapper<DefaultApplicationBootStrapper>(Configuration, o => {
-                //o.AddInstaller(new ModelMapperInstaller());
             });
         }
 

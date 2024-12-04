@@ -133,7 +133,7 @@ if ($config.database.triggers.excludeTables.length -gt 0) {
 }
 
 $triggerTemplate = @"
-DROP TRIGGER IF EXISTS {{schema}}.{{triggerName}}
+DROP TRIGGER IF EXISTS {{triggerName}}
 GO
 
 ---
@@ -148,7 +148,7 @@ CREATE TRIGGER {{triggerName}}
 	SET NOCOUNT ON
 
 	DECLARE 
-		@AuditLogTransactionId	bigint,
+		@AuditLogTransactionId	int,
 		@Inserted	    		int = 0,
  		@ROWS_COUNT				int
 
