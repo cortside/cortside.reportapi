@@ -16,7 +16,6 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Helpers {
         /// </summary>
         /// <typeparam name="T">The type of entity to load</typeparam>
         /// <param name="dbSet">The DbSet to populate</param>
-        /// <param name="stream">The stream containing the CSV file contents</param>
         /// <param name="additionalMapping">Any additional complex mappings required</param>
         public static async Task<List<T>> SeedFromFileAsync<T>(this DbSet<T> dbSet, string filename, params CsvColumnMapping<T>[] additionalMapping) where T : class {
             var data = DataFromFile(filename, additionalMapping);

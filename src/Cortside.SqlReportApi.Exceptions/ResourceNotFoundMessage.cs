@@ -7,5 +7,8 @@ namespace Cortside.SqlReportApi.Exceptions {
 
         public ResourceNotFoundMessage(string message) : base(message) {
         }
+
+        public ResourceNotFoundMessage(string message, System.Exception exception) : base(message, exception) {
+        }
     }
 }

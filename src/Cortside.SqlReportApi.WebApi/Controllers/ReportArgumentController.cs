@@ -14,7 +14,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
     [ApiVersion("1")]
     [Produces("application/json")]
     [ApiController]
-    public class ReportArgumentController : Controller {
+    public class ReportArgumentController : ControllerBase {
         private readonly ISqlReportService svc;
 
         /// <summary>

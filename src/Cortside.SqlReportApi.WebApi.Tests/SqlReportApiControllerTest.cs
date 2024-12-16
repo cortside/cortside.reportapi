@@ -21,12 +21,12 @@ using Xunit;
 namespace Cortside.SqlReportApi.WebApi.Tests {
 
     public class SqlReportApiControllerTest : ControllerTest<ReportArgumentController> {
-        private Mock<ISqlReportService> serviceMock;
-        private Mock<IPolicyServerRuntimeClient> policyClientMock;
-        private ReportArgumentController reportArgumentController;
-        private ReportArgumentQueryController reportArgumentQueryController;
-        private ReportController reportController;
-        private ReportGroupController reportGroupController;
+        private readonly Mock<ISqlReportService> serviceMock;
+        private readonly Mock<IPolicyServerRuntimeClient> policyClientMock;
+        private readonly ReportArgumentController reportArgumentController;
+        private readonly ReportArgumentQueryController reportArgumentQueryController;
+        private readonly ReportController reportController;
+        private readonly ReportGroupController reportGroupController;
         private const string permission = "permission";
 
         public SqlReportApiControllerTest() : base() {
@@ -258,9 +258,9 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
             using MemoryStream stream = new MemoryStream();
             using StreamWriter writer = new StreamWriter(stream);
-            writer.WriteLine("column1", "column2");
-            writer.WriteLine("row1column1", "row1column2");
-            writer.WriteLine("row2column1", "row2column2");
+            await writer.WriteLineAsync("column1", "column2");
+            await writer.WriteLineAsync("row1column1", "row1column2");
+            await writer.WriteLineAsync("row2column1", "row2column2");
 
             reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
             serviceMock.Setup(s => s.ExecuteReportAsync(It.IsAny<string>(), It.IsAny<QueryCollection>(), It.IsAny<List<string>>())).Returns(Task.FromResult(report));
