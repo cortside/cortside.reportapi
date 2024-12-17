@@ -29,7 +29,7 @@ RUN dotnet --info
 COPY src/ /app/src/
 
 # update build.json
-RUN jq -n --arg version "$version" --arg timestamp $(date +"%Y-%m-%dT%H:%M:%S%:z") --arg tag "$imageversion" --arg suffix "$branchTag" '{"build":{"version":$version,"timestamp":$timestamp,"tag":$tag,"suffix":$suffix }}' > /app/src/${publishableProject}/build.json
+RUN jq -n --arg version "$imageversion" --arg timestamp $(date +"%Y-%m-%dT%H:%M:%S%:z") --arg tag "$imageversion" --arg suffix "$branchTag" '{"build":{"version":$imageversion,"timestamp":$timestamp,"tag":$tag,"suffix":$suffix }}' > /app/src/${publishableProject}/build.json
 RUN cat /app/src/${publishableProject}/build.json
 
 # build, run tests and lint analysis
@@ -54,7 +54,7 @@ RUN export SONAR_SCANNER_OPTS="-Xmx4096m" && \
     dotnet sonarscanner end /d:sonar.login="$sonartoken"
     
 # publish artifacts for runtime image    
-RUN dotnet publish ./${publishableProject} -p:Version=$version -o out -r linux-musl-x64
+RUN dotnet publish ./${publishableProject} -p:Version=${imageversion} -o out -r linux-musl-x64
 
 ## ============================= 
 ## Build the runtime environment

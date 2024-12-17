@@ -3,16 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Cortside.SqlReportApi.WebApi.IntegrationTests.v3.ncrunchproject" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="appsettings.integration.json">
-      <TransformOnBuild>true</TransformOnBuild>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Cortside.Common.Testing" Version="6.3.458" />
     <PackageReference Include="Cortside.MockServer.AccessControl" Version="6.2.74" />
@@ -48,6 +39,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Cortside.SqlReportApi.Data\Cortside.SqlReportApi.Data.csproj" />
     <ProjectReference Include="..\Cortside.SqlReportApi.WebApi\Cortside.SqlReportApi.WebApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.integration.json">
+      <TransformOnBuild>true</TransformOnBuild>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="Data\*.csv">
