@@ -159,6 +159,7 @@ foreach ($dockerfile in $dockerFiles) {
 	$dockerbuildargs +="--build-arg `"buildimage=$($config.docker.buildimage)`""
 	$dockerbuildargs +="--build-arg `"runtimeimage=$($config.docker.runtimeimage)`""
 	$dockerbuildargs +="--build-arg `"branch=$branch`""
+	$dockerbuildargs +="--build-arg `"version=$buildNumber`""
 	$dockerbuildargs +="--build-arg `"imageversion=$imageversion`""
 	$dockerbuildargs +="--build-arg `"projectname=$($config.repository.name)`""
 	$dockerbuildargs +="--build-arg `"analysisArgs=$analysisArgs`""
