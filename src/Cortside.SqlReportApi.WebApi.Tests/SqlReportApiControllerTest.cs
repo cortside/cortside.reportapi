@@ -234,43 +234,51 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
 
             var report = new ReportResult("my report") {
-                ResultSets = { new ResultSet {
-                Columns = new List<ReportColumn> {
-                    new ReportColumn {
-                        Name = "column1"
-                    },
-                    new ReportColumn {
-                        Name = "column2"
+                ResultSets = {
+                    new ResultSet {
+                        Columns = new List<ReportColumn> {
+                            new ReportColumn {
+                                Name = "column1"
+                            },
+                            new ReportColumn {
+                                Name = "column2"
+                            }
+                        },
+                        Rows = new List<object[]> {
+                            new object[] {
+                                "row1column1",
+                                "row1column2"
+                            },
+                            new object[] {
+                                "row2column1",
+                                "row2column2"
+                            },
+                        }
                     }
-                },
-                Rows = new List<object[]> {
-                    new object[] {
-                        "row1column1",
-                        "row1column2"},
-                    new object[] {
-                        "row2column1",
-                        "row2column2"
-                    },
-                }
-                }
                 }
             };
 
-            using MemoryStream stream = new MemoryStream();
-            using StreamWriter writer = new StreamWriter(stream);
-            await writer.WriteLineAsync("column1", "column2");
-            await writer.WriteLineAsync("row1column1", "row1column2");
-            await writer.WriteLineAsync("row2column1", "row2column2");
+            await using (MemoryStream stream = new MemoryStream()) {
+                await using (StreamWriter writer = new StreamWriter(stream)) {
+                    await writer.WriteLineAsync("column1,column2");
+                    await writer.WriteLineAsync("row1column1,row1column2");
+                    await writer.WriteLineAsync("row2column1,row2column2");
 
-            reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
-            serviceMock.Setup(s => s.ExecuteReportAsync(It.IsAny<string>(), It.IsAny<QueryCollection>(), It.IsAny<List<string>>())).Returns(Task.FromResult(report));
-            serviceMock.Setup(s => s.ExportReport(It.IsAny<ReportResult>())).Returns(stream);
+                    reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object,
+                        new RouteData(), new ControllerActionDescriptor()));
+                    serviceMock.Setup(s =>
+                            s.ExecuteReportAsync(It.IsAny<string>(), It.IsAny<QueryCollection>(),
+                                It.IsAny<List<string>>()))
+                        .Returns(Task.FromResult(report));
+                    serviceMock.Setup(s => s.ExportReport(It.IsAny<ReportResult>())).Returns(stream);
 
-            //act
-            var result = await reportController.ExportAsync("report");
+                    //act
+                    var result = await reportController.ExportAsync("report");
 
-            //assert
-            var viewResult = result.Should().BeAssignableTo<FileStreamResult>();
+                    //assert
+                    result.Should().BeAssignableTo<FileStreamResult>();
+                }
+            }
         }
     }
 }
