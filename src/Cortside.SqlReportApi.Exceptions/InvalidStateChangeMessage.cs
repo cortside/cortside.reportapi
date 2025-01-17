@@ -7,5 +7,8 @@ namespace Cortside.SqlReportApi.Exceptions {
 
         public InvalidStateChangeMessage(string message) : base($"Current state does not allow requested operation. {message}") {
         }
+
+        public InvalidStateChangeMessage(string message, System.Exception exception) : base(message, exception) {
+        }
     }
 }

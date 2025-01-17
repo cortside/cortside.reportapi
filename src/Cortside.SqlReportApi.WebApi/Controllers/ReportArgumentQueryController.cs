@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Cortside.AspNetCore.Common.Models;
 using Cortside.SqlReportApi.Domain.Entities;
 using Cortside.SqlReportApi.DomainService;
@@ -13,7 +14,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
     [ApiVersion("1")]
     [Produces("application/json")]
     [ApiController]
-    public class ReportArgumentQueryController : Controller {
+    public class ReportArgumentQueryController : ControllerBase {
         private readonly ISqlReportService svc;
 
         /// <summary>

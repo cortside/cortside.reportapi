@@ -21,12 +21,12 @@ using Xunit;
 namespace Cortside.SqlReportApi.WebApi.Tests {
 
     public class SqlReportApiControllerTest : ControllerTest<ReportArgumentController> {
-        private Mock<ISqlReportService> serviceMock;
-        private Mock<IPolicyServerRuntimeClient> policyClientMock;
-        private ReportArgumentController reportArgumentController;
-        private ReportArgumentQueryController reportArgumentQueryController;
-        private ReportController reportController;
-        private ReportGroupController reportGroupController;
+        private readonly Mock<ISqlReportService> serviceMock;
+        private readonly Mock<IPolicyServerRuntimeClient> policyClientMock;
+        private readonly ReportArgumentController reportArgumentController;
+        private readonly ReportArgumentQueryController reportArgumentQueryController;
+        private readonly ReportController reportController;
+        private readonly ReportGroupController reportGroupController;
         private const string permission = "permission";
 
         public SqlReportApiControllerTest() : base() {
@@ -58,7 +58,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentAsync(It.IsAny<int>())).ReturnsAsync(reportArgument);
 
             //act
-            var result = await reportArgumentController.GetAsync(1).ConfigureAwait(false);
+            var result = await reportArgumentController.GetAsync(1);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -79,7 +79,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentsAsync()).ReturnsAsync(reportArgument);
 
             //act
-            var result = await reportArgumentController.GetAsync().ConfigureAwait(false);
+            var result = await reportArgumentController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -98,7 +98,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentQueryAsync(It.IsAny<int>())).ReturnsAsync(reportArgumentQuery);
 
             //act
-            var result = await reportArgumentQueryController.GetAsync(1).ConfigureAwait(false);
+            var result = await reportArgumentQueryController.GetAsync(1);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -118,7 +118,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportArgumentQueriesAsync()).ReturnsAsync(reportArgumentQuery);
 
             //act
-            var result = await reportArgumentQueryController.GetAsync().ConfigureAwait(false);
+            var result = await reportArgumentQueryController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -151,7 +151,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
 
             //act
-            var result = await reportController.GetAsync(reportRequest.Name).ConfigureAwait(false);
+            var result = await reportController.GetAsync(reportRequest.Name);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -171,7 +171,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportsAsync()).ReturnsAsync(report);
 
             //act
-            var result = await reportController.GetAsync().ConfigureAwait(false);
+            var result = await reportController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -190,7 +190,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportGroupAsync(It.IsAny<int>())).ReturnsAsync(reportGroup);
 
             //act
-            var result = await reportGroupController.GetAsync(1).ConfigureAwait(false);
+            var result = await reportGroupController.GetAsync(1);
 
             //assert
             var viewResult = result.Should().BeAssignableTo<ObjectResult>();
@@ -210,7 +210,7 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
             serviceMock.Setup(s => s.GetReportGroupsAsync()).ReturnsAsync(reportGroup);
 
             //act
-            var result = await reportGroupController.GetAsync().ConfigureAwait(false);
+            var result = await reportGroupController.GetAsync();
 
             //assert
             var viewResult = result.Should().BeAssignableTo<OkObjectResult>();
@@ -234,43 +234,51 @@ namespace Cortside.SqlReportApi.WebApi.Tests {
 
 
             var report = new ReportResult("my report") {
-                ResultSets = { new ResultSet {
-                Columns = new List<ReportColumn> {
-                    new ReportColumn {
-                        Name = "column1"
-                    },
-                    new ReportColumn {
-                        Name = "column2"
+                ResultSets = {
+                    new ResultSet {
+                        Columns = new List<ReportColumn> {
+                            new ReportColumn {
+                                Name = "column1"
+                            },
+                            new ReportColumn {
+                                Name = "column2"
+                            }
+                        },
+                        Rows = new List<object[]> {
+                            new object[] {
+                                "row1column1",
+                                "row1column2"
+                            },
+                            new object[] {
+                                "row2column1",
+                                "row2column2"
+                            },
+                        }
                     }
-                },
-                Rows = new List<object[]> {
-                    new object[] {
-                        "row1column1",
-                        "row1column2"},
-                    new object[] {
-                        "row2column1",
-                        "row2column2"
-                    },
-                }
-                }
                 }
             };
 
-            using MemoryStream stream = new MemoryStream();
-            using StreamWriter writer = new StreamWriter(stream);
-            writer.WriteLine("column1", "column2");
-            writer.WriteLine("row1column1", "row1column2");
-            writer.WriteLine("row2column1", "row2column2");
+            await using (MemoryStream stream = new MemoryStream()) {
+                await using (StreamWriter writer = new StreamWriter(stream)) {
+                    await writer.WriteLineAsync("column1,column2");
+                    await writer.WriteLineAsync("row1column1,row1column2");
+                    await writer.WriteLineAsync("row2column1,row2column2");
 
-            reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object, new RouteData(), new ControllerActionDescriptor()));
-            serviceMock.Setup(s => s.ExecuteReportAsync(It.IsAny<string>(), It.IsAny<QueryCollection>(), It.IsAny<List<string>>())).Returns(Task.FromResult(report));
-            serviceMock.Setup(s => s.ExportReport(It.IsAny<ReportResult>())).Returns(stream);
+                    reportController.ControllerContext = new ControllerContext(new ActionContext(context.Object,
+                        new RouteData(), new ControllerActionDescriptor()));
+                    serviceMock.Setup(s =>
+                            s.ExecuteReportAsync(It.IsAny<string>(), It.IsAny<QueryCollection>(),
+                                It.IsAny<List<string>>()))
+                        .Returns(Task.FromResult(report));
+                    serviceMock.Setup(s => s.ExportReport(It.IsAny<ReportResult>())).Returns(stream);
 
-            //act
-            var result = await reportController.ExportAsync("report").ConfigureAwait(false);
+                    //act
+                    var result = await reportController.ExportAsync("report");
 
-            //assert
-            var viewResult = result.Should().BeAssignableTo<FileStreamResult>();
+                    //assert
+                    result.Should().BeAssignableTo<FileStreamResult>();
+                }
+            }
         }
     }
 }

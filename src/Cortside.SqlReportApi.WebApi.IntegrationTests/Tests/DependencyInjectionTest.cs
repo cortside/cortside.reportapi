@@ -73,7 +73,7 @@ namespace Cortside.SqlReportApi.WebApi.IntegrationTests.Tests {
                     errors.Add(controllerType, ex);
                 }
             }
-
+            Console.Out.WriteLine($"The slowest controller to resolve was {slowest} in {max}ms");
             Assert.True(errors.Count == 0, string.Join(Environment.NewLine, errors.Select(x => $"Failed to resolve controller {x.Key.Name} due to {x.Value}")));
         }
     }

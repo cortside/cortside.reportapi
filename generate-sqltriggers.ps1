@@ -50,7 +50,7 @@ Write-Output @("
 ")
 
 if ($PSScriptRoot.Contains(' ')) { 
-	throw "Your working directory has a space in the path, which is not supported.  Wise up and move to C:\work\Cortside.SqlReportApi! And have a wonderful work day!"
+	throw "Your working directory has a space in the path, which is not supported.  Wise up and move to C:\work\Acme.ShoppingCart! And have a wonderful work day!"
 	exit
 }
 
@@ -66,10 +66,10 @@ try {
 try {   
 	if ($username -eq "") {
 		Write-Output "Verifying SqlServer accessible at $server"
-		invoke-sqlcmd -ServerInstance $server -Query "select 'invoke-sqlcmd successful' AS SqlServerStatus" -QueryTimeout 5 -ConnectionTimeout 5 -ErrorAction Stop
+		invoke-sqlcmd -ServerInstance $server -Query "select 'invoke-sqlcmd successful' AS SqlServerStatus" -QueryTimeout 5 -ConnectionTimeout 5 -ErrorAction Stop -TrustServerCertificate
 	} else {
 		Write-Output "Verifying SqlServer accessible at $server with user $username"
-		invoke-sqlcmd -ServerInstance $server -username $username -password $password -Query "select 'invoke-sqlcmd successful' AS SqlServerStatus" -QueryTimeout 5 -ConnectionTimeout 5 -ErrorAction Stop
+		invoke-sqlcmd -ServerInstance $server -username $username -password $password -Query "select 'invoke-sqlcmd successful' AS SqlServerStatus" -QueryTimeout 5 -ConnectionTimeout 5 -ErrorAction Stop -TrustServerCertificate
 	}
 } catch {
 	throw "Problem connecting to SqlServer at $server. Please confirm up and running and try again."
@@ -98,7 +98,7 @@ try {
 		invoke-sqlcmd -ServerInstance $server -Query $deleteLocalDbQuery -ErrorAction Stop
 	} else {
 		Write-Output "Executing drop and create of $triggergenDbName on $server with user $username"
-		invoke-sqlcmd -ServerInstance $server -username $username -password $password -Query $deleteLocalDbQuery -ErrorAction Stop
+		invoke-sqlcmd -ServerInstance $server -username $username -password $password -Query $deleteLocalDbQuery -ErrorAction Stop -TrustServerCertificate
 	}
 } catch {
 	Write-Output($error)
@@ -118,7 +118,7 @@ try {
 		invoke-sqlcmd -serverInstance $server -Database $triggergenDbName -inputFile "$schemafile" -ErrorAction Stop
 	} else {
 		Write-Output "Executing schema file $schemafile on $server with user $username"
-		invoke-sqlcmd -serverInstance $server -username $username -password $password -Database $triggergenDbName -inputFile "$schemafile" -ErrorAction Stop
+		invoke-sqlcmd -serverInstance $server -username $username -password $password -Database $triggergenDbName -inputFile "$schemafile" -ErrorAction Stop -TrustServerCertificate
 	}
 	rm $schemafile
 } catch {
@@ -227,7 +227,7 @@ $projectExcludeTables
 if ($username -eq "") {
 	$tables = Invoke-Sqlcmd -Query $sql -ServerInstance $server -Database $triggergenDbName
 } else {
-	$tables = Invoke-Sqlcmd -Query $sql -ServerInstance $server -username $username -password $password -Database $triggergenDbName
+	$tables = Invoke-Sqlcmd -Query $sql -ServerInstance $server -username $username -password $password -Database $triggergenDbName -TrustServerCertificate
 }
 
 foreach ($table in $tables) {
@@ -251,7 +251,7 @@ ORDER BY ORDINAL_POSITION
 	if ($username -eq "") {
 		$columns = Invoke-Sqlcmd -Query $sql -ServerInstance $server -Database $triggergenDbName
 	} else {
-		$columns = Invoke-Sqlcmd -Query $sql -ServerInstance $server -username $username -password $password -Database $triggergenDbName
+		$columns = Invoke-Sqlcmd -Query $sql -ServerInstance $server -username $username -password $password -Database $triggergenDbName -TrustServerCertificate
 	}
 
 	$cols = ""

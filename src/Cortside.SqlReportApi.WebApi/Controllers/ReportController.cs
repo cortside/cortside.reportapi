@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Cortside.AspNetCore.Common.Models;
 using Cortside.SqlReportApi.Data;
 using Cortside.SqlReportApi.Domain.Entities;
@@ -19,7 +20,7 @@ namespace Cortside.SqlReportApi.WebApi.Controllers {
     [ApiVersion("1")]
     [Produces("application/json")]
     [ApiController]
-    public class ReportController : Controller {
+    public class ReportController : ControllerBase {
         private readonly ISqlReportService svc;
         private readonly IPolicyServerRuntimeClient policyClient;
 

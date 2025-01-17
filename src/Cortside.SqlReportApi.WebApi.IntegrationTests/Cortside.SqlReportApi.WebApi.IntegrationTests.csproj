@@ -1,48 +1,52 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
+
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Cortside.Common.Testing" Version="6.3.458" />
+    <PackageReference Include="Cortside.MockServer.AccessControl" Version="6.2.74" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="EFCore.Seeder" Version="3.1.0" />
+    <PackageReference Include="FluentAssertions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.11" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.12.9">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.3.0.106239">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="WireMock.Net" Version="1.6.9" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="DistributedLock.FileSystem" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Cortside.SqlReportApi.WebApi.IntegrationTests.v3.ncrunchproject" />
+    <ProjectReference Include="..\Cortside.SqlReportApi.Data\Cortside.SqlReportApi.Data.csproj" />
+    <ProjectReference Include="..\Cortside.SqlReportApi.WebApi\Cortside.SqlReportApi.WebApi.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <Content Include="appsettings.integration.json">
       <TransformOnBuild>true</TransformOnBuild>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Cortside.Common.Testing" Version="6.2.408" />
-    <PackageReference Include="Cortside.MockServer.AccessControl" Version="6.1.62" />
-    <PackageReference Include="coverlet.collector" Version="6.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="EFCore.Seeder" Version="3.1.0" />
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.8.14">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="WireMock.Net" Version="1.5.46" />
-    <PackageReference Include="xunit" Version="2.6.6" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="DistributedLock.FileSystem" Version="1.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Cortside.SqlReportApi.Data\Cortside.SqlReportApi.Data.csproj" />
-    <ProjectReference Include="..\Cortside.SqlReportApi.WebApi\Cortside.SqlReportApi.WebApi.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Data\*.csv">

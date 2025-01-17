@@ -239,7 +239,6 @@ Logs/
 /src/c7.auth/wwwroot/lib
 *.css
 
-build.json
 coverage.opencover.xml
 coverage.xml
 .sonarqube/*
@@ -253,8 +252,8 @@ coverage.opencover.xml
 
 *.local.json
 .refsignored
+.NCrunch*/
 
-# don't set trigger on outbox table
-src/sql/trigger/trOutbox.trigger.sql
-
-.NCrunch_*
+docker.env
+buildconfig.json
+coveragereport
