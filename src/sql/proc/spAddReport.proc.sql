@@ -9,10 +9,27 @@ GO
 create procedure dbo.spAddReport
 	@name varchar(100),
 	@description varchar(100),
-	@reportGroupId int
+	@reportGroupId int NULL = NULL,
+    @reportGroupName varchar(100) NULL = NULL
 
 as
-	print N'Adding report permission: ' + @name
+    if (@reportGroupId is null and @reportGroupName is null)
+      THROW 50000, 'Either @reportGroupId or @reportGroupName must be provided', 1;
+
+    if (@reportGroupName is not null)
+      begin
+        if not exists (select * from ReportGroup where Name = @reportGroupName)
+          begin
+            insert into ReportGroup (Name) values(@reportGroupName)
+            set @reportGroupId = (select SCOPE_IDENTITY())
+          end
+        else
+          begin
+            select @reportGroupId = ReportGroupId from ReportGroup where Name = @reportGroupName
+          end
+      end
+
+	print N'Adding report: ' + @name
 	if not exists (select * from Report where Name = @name and ReportGroupId = @reportGroupId)
 		begin
 			insert into Report (Name, [Description], ReportGroupId, Permission)
